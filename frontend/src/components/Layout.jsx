@@ -74,10 +74,12 @@ const Layout = ({ children }) => {
           <p>
             Todo lo que necesitas para el cuidado de tu bebé, con los mejores precios y la mejor calidad.
           </p>
-          <div className="footer-social">
-            <a href="#"><span role="img" aria-label="facebook">📘</span></a>
-            <a href="#"><span role="img" aria-label="instagram">📸</span></a>
-          </div>
+                <div className="footer-social">
+        <a href="https://www.facebook.com" className="facebook" target="_blank" rel="noopener noreferrer"></a>
+        <a href="https://www.instagram.com/vice_1099/" className="instagram" target="_blank" rel="noopener noreferrer"></a>
+        <a href="https://wa.me/51935532263" className="whatsapp" target="_blank" rel="noopener noreferrer"></a>
+      </div>
+
         </div>
         <div className="footer-col">
           <h4>Enlaces rápidos</h4>
@@ -102,9 +104,9 @@ const Layout = ({ children }) => {
         <div className="footer-col">
           <h4>Contacto</h4>
           <ul>
-            <li>Av. Principal 123, Ciudad de México, México</li>
-            <li>+52 55 1234 5678</li>
-            <li><a href="mailto:contacto@panaleriaclaudia.com">contacto@panaleriaclaudia.com</a></li>
+            <li>Mza.C-10-Int 65-Lote 3Urb. Las Banderas-Prov.Const.del Callo</li>
+            <li>+51 935 532 264</li>
+            <li><a href="mailto:contacto@panaleriaclaudia.com">contacto@pañaleriaclaudia.com</a></li>
           </ul>
         </div>
       </footer>

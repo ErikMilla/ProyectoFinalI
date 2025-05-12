@@ -65,34 +65,48 @@
 }
 
 /* Footer personalizado */
+/* Footer animado y colorido */
 .footer-custom {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #f9fbfc;
-  padding: 2.5rem 2rem;
-  font-family: 'Segoe UI', sans-serif;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 2rem;
-  flex-wrap: wrap;
+  background: linear-gradient(135deg, #fff2f2, #fef9f9);
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+  animation: fadeInFooter 1.2s ease-in-out;
+  border-top: 4px solid #eebbbb;
 }
 
 .footer-col {
-  flex: 1 1 220px;
-  margin: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  color: #555;
 }
 
 .footer-brand {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
-  color: #f7b6b6;
+  color: #eaa7a6;
   margin-bottom: 0.5rem;
 }
 
 .footer-col h4 {
-  font-size: 1.1rem;
   margin-bottom: 1rem;
-  color: #333;
+  color: #96c4c4;
+  font-weight: 600;
+  font-size: 1.1rem;
+  position: relative;
+}
+
+.footer-col h4::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #eebbbb;
+  margin-top: 4px;
+  border-radius: 3px;
+  animation: growBar 1s ease;
 }
 
 .footer-col ul {
@@ -102,40 +116,64 @@
 }
 
 .footer-col ul li {
-  margin-bottom: 0.5rem;
-  color: #888;
-  font-size: 0.97rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
 }
 
-.footer-col ul li a {
-  color: #888;
+.footer-col ul li:hover {
+  color: #eaa7a6;
+  transform: translateX(5px);
+}
+
+.footer-col a {
   text-decoration: none;
-  transition: color 0.2s;
+  color: inherit;
 }
 
-.footer-col ul li a:hover {
-  color: #f7b6b6;
+.footer-col a:hover {
+  color: #eaa7a6;
 }
 
+/* Redes sociales */
 .footer-social {
   display: flex;
   gap: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .footer-social a {
-  color: #f7b6b6;
-  font-size: 1.3rem;
-  text-decoration: none;
+  font-size: 1.8rem;
+  color: #96c4c4;
+  transition: transform 0.4s ease, color 0.3s ease;
 }
 
-@media (max-width: 900px) {
-  .footer-custom {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
-  }
-  .footer-col {
-    margin: 0 0 1.5rem 0;
-  }
+.footer-social a:hover {
+  transform: rotate(12deg) scale(1.2);
+  color: #eaa7a6;
+}
+
+/* Íconos con emojis o con FontAwesome (si usas) */
+.footer-social a.facebook::before {
+  content: "📘";
+}
+
+.footer-social a.instagram::before {
+  content: "📸";
+}
+
+.footer-social a.whatsapp::before {
+  content: "📱";
+}
+
+/* Animaciones */
+@keyframes fadeInFooter {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes growBar {
+  from { width: 0; }
+  to { width: 40px; }
 }
