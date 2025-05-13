@@ -1,0 +1,183 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="131009D5-3E08-2CB1-ABFE-0395446FC33B" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="CITAS">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>CITAS</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:25 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="F0B5665B-3999-8332-9889-24C4D81E26CC">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<defaultOntNull>true</defaultOntNull>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementDisableCache>false</autoIncrementDisableCache>
+<autoIncrementCache>20</autoIncrementCache>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="PACIENTE_ID" id="72236788-D08C-7793-7174-367F5968DCC0">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>PACIENTE_ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="5D606FB3-27D9-3AD5-BEEB-63C272313256" referredColumn="004AE0A4-BF52-CAFE-AC27-2E54CAC4BE8D"/>
+</associations>
+</Column>
+<Column name="MEDICO_ID" id="C5B3B877-579D-B5B4-6FED-9A464AFE60A3">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>MEDICO_ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="76FD1D12-E3BF-467D-039B-087568386FF4" referredColumn="B829F415-E006-F6C2-6953-458D8CD3B426"/>
+</associations>
+</Column>
+<Column name="FECHA" id="32E17957-5E7D-2BA1-EA5D-4442EC1FD9F1">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>FECHA</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="HORA" id="FEB3FD80-C185-1772-E5E2-7278E583095E">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>HORA</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ESTADO" id="875ED61A-D8E9-26CF-75D5-1169F15E5EB0">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>ESTADO</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<constraintName>SYS_C008557</constraintName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<listOfValues>
+<valueDef value="&apos;cancelada&apos;" description=""/>
+<valueDef value="&apos;completada&apos;" description=""/>
+<valueDef value="&apos;confirmada&apos;" description=""/>
+<valueDef value="&apos;pendiente&apos;" description=""/>
+</listOfValues>
+<defaultValue>&apos;pendiente&apos;</defaultValue>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MOTIVO" id="0F7F8453-33F9-4C10-F904-EEEAA394A337">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>MOTIVO</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT028</logicalDatatype>
+<dataTypeSize>4000</dataTypeSize>
+<ownDataTypeParameters>4000,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="FECHA_CREACION" id="3F1E2C1C-85B7-E1CF-82F2-C79673FF1198">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>CITAS</sourceObjSchema>
+<sourceObjName>FECHA_CREACION</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<defaultValue>CURRENT_TIMESTAMP</defaultValue>
+<ownDataTypeParameters>,6,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="46270D7A-E18A-3D02-C771-22F31F0BF09B" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="CITAS_PK">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>SYS_C008558</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:31 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F0B5665B-3999-8332-9889-24C4D81E26CC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="59E12827-3867-98F7-1ECA-F036F757A3FD" name="FK_CITA_MEDICO">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:38 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C5B3B877-579D-B5B4-6FED-9A464AFE60A3"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="8CFD25A4-FD59-4160-506C-52A5BEA5AFC8" name="FK_PACIENTE">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:38 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="72236788-D08C-7793-7174-367F5968DCC0"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

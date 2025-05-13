@@ -1,0 +1,186 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="9A58A17D-2E40-9AFA-D365-20E8F945BEC9" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="USUARIOS">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>USUARIOS</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:25 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="004AE0A4-BF52-CAFE-AC27-2E54CAC4BE8D">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<defaultOntNull>true</defaultOntNull>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementDisableCache>false</autoIncrementDisableCache>
+<autoIncrementCache>20</autoIncrementCache>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="NOMBRE" id="0522A0F8-566A-4635-C568-EA5D7413F8A4">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>NOMBRE</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EMAIL" id="73892F62-9B5C-02C5-9C15-7D0D3391A535">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>EMAIL</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PASSWORD" id="4E209135-4B39-F554-8A96-0ADE82A5E451">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>PASSWORD</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255 BYTE</dataTypeSize>
+<ownDataTypeParameters>255 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TELEFONO" id="6FD10C79-6F26-8C83-9922-D2C44BE8BB30">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>TELEFONO</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DIRECCION" id="7E64E975-7892-EE6D-78B3-20A083F9FD28">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>DIRECCION</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT028</logicalDatatype>
+<dataTypeSize>4000</dataTypeSize>
+<ownDataTypeParameters>4000,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ROL" id="FBF06940-54BD-63A4-C522-CFA2DCE4AEBD">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>ROL</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<constraintName>SYS_C008532</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<listOfValues>
+<valueDef value="&apos;admin&apos;" description=""/>
+<valueDef value="&apos;doctor&apos;" description=""/>
+<valueDef value="&apos;paciente&apos;" description=""/>
+</listOfValues>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="FECHA_REGISTRO" id="9D8631A8-4CA5-C605-E9EA-F3362CE3E1EB">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>FECHA_REGISTRO</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<defaultValue>CURRENT_TIMESTAMP</defaultValue>
+<ownDataTypeParameters>,6,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="FOTO_PERFIL" id="40A6DE8E-9F3B-3ABE-BC77-66E54FB0E0E0">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIOS</sourceObjSchema>
+<sourceObjName>FOTO_PERFIL</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255 BYTE</dataTypeSize>
+<defaultValue>&apos;default.jpg&apos;</defaultValue>
+<ownDataTypeParameters>255 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="44095AC4-EA60-CC47-6664-6F7303E33BEC" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="USUARIOS_PK">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>SYS_C008533</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:36 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="004AE0A4-BF52-CAFE-AC27-2E54CAC4BE8D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="688AA5D9-CC30-9C0F-8F7A-E9C7E3B3D243" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="USUARIOS_EMAIL_UN">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>SYS_C008534</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:36 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="73892F62-9B5C-02C5-9C15-7D0D3391A535"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

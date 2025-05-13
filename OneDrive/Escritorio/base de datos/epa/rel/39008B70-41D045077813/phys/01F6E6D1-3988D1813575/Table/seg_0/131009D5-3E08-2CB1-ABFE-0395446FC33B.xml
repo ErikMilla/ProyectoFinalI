@@ -1,0 +1,100 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="CITAS" directorySegmentName="seg_0" id="131009D5-3E08-2CB1-ABFE-0395446FC33B">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:25 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<schemaObject>AD4B0561-F390-4396-8880-EC92AFA7BAB4</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>5623EF08-4FF5-2992-DEED-6584C81EDFC1</segment>
+<tableSpace>99D6A644-3533-F772-79EB-73EDC8F35952</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="MOTIVO" id="0F7F8453-33F9-4C10-F904-EEEAA394A337">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="FECHA" id="32E17957-5E7D-2BA1-EA5D-4442EC1FD9F1">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="FECHA_CREACION" id="3F1E2C1C-85B7-E1CF-82F2-C79673FF1198">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<defaultValue>CURRENT_TIMESTAMP</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="PACIENTE_ID" id="72236788-D08C-7793-7174-367F5968DCC0">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ESTADO" id="875ED61A-D8E9-26CF-75D5-1169F15E5EB0">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<defaultValue>&apos;pendiente&apos;</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="MEDICO_ID" id="C5B3B877-579D-B5B4-6FED-9A464AFE60A3">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID" id="F0B5665B-3999-8332-9889-24C4D81E26CC">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<autoIncrementDDL>IDENTITY_CLAUSE</autoIncrementDDL>
+</ColumnProxy>
+<ColumnProxy name="HORA" id="FEB3FD80-C185-1772-E5E2-7278E583095E">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_CITA_MEDICO" id="59E12827-3867-98F7-1ECA-F036F757A3FD">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:38 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ForeignKey>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_PACIENTE" id="8CFD25A4-FD59-4160-506C-52A5BEA5AFC8">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:38 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<lobStorages>
+<LobStorage class="oracle.dbtools.crest.model.design.storage.oracle.v11g.LobStorageOraclev11g" name="SYS_LOB0000077915C00007$$" id="639F3A98-F072-8871-47D5-62891006194E">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:39 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<cache>NOCACHE</cache>
+<chunk>8192</chunk>
+<column>MOTIVO</column>
+<compression>NO</compression>
+<duplication>KEEP_DUPLICATES</duplication>
+<logging>YES</logging>
+<tableSpace>99D6A644-3533-F772-79EB-73EDC8F35952</tableSpace>
+<lobStorageType>SECUREFILE</lobStorageType>
+</LobStorage>
+</lobStorages>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="CITAS_PK" id="46270D7A-E18A-3D02-C771-22F31F0BF09B">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:36 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<schemaObject>AD4B0561-F390-4396-8880-EC92AFA7BAB4</schemaObject>
+<segment>B34ED0FA-4586-A77F-1270-E4D0816AD6F8</segment>
+<tableSpace>99D6A644-3533-F772-79EB-73EDC8F35952</tableSpace>
+<indexSegment>B34ED0FA-4586-A77F-1270-E4D0816AD6F8</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>

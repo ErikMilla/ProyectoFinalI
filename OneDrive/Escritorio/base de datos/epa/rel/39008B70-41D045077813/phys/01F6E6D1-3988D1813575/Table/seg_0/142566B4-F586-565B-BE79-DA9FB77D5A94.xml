@@ -1,0 +1,63 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="HORARIOS_MEDICOS" directorySegmentName="seg_0" id="142566B4-F586-565B-BE79-DA9FB77D5A94">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:25 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<schemaObject>AD4B0561-F390-4396-8880-EC92AFA7BAB4</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>5623EF08-4FF5-2992-DEED-6584C81EDFC1</segment>
+<tableSpace>99D6A644-3533-F772-79EB-73EDC8F35952</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="ID" id="30E9D737-0E53-9362-EF3D-912C4A94C4A4">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<autoIncrementDDL>IDENTITY_CLAUSE</autoIncrementDDL>
+</ColumnProxy>
+<ColumnProxy name="DIA_SEMANA" id="53BBF210-9539-CC91-D490-1CF86AAF6237">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="HORA_FIN" id="84950AC3-F9B8-AC69-F36F-5A8E30496676">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="MEDICO_ID" id="E126C1EA-0FE1-8670-5AA1-FC425BD3F35E">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="HORA_INICIO" id="E81EF03A-8038-4550-597F-77B7CCA2E17E">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_MEDICO" id="1D02BA42-8433-902B-FEE5-54C6783FB95F">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:38 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="HORARIOS_MEDICOS_PK" id="4C497DE4-72A3-1AE1-3BF5-BDFD1036852D">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:36 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<schemaObject>AD4B0561-F390-4396-8880-EC92AFA7BAB4</schemaObject>
+<segment>B34ED0FA-4586-A77F-1270-E4D0816AD6F8</segment>
+<tableSpace>99D6A644-3533-F772-79EB-73EDC8F35952</tableSpace>
+<indexSegment>B34ED0FA-4586-A77F-1270-E4D0816AD6F8</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>
