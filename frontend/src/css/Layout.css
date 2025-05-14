@@ -7,6 +7,7 @@
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
   font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* ← sombra más notoria */
 }
 
 .nav-left {
@@ -176,4 +177,41 @@
 @keyframes growBar {
   from { width: 0; }
   to { width: 40px; }
+}
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #f7b6b6;
+}
+
+@media (max-width: 768px) {
+  .nav-links-custom {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  .nav-links-custom.show {
+    display: flex;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav-left {
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
