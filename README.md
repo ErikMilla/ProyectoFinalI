@@ -3,7 +3,7 @@
 
 Este es un proyecto full-stack desarrollado como parte de un trabajo integrador académico. Consiste en:
 
-- ✨ **Frontend**: Aplicación web hecha en React con Tailwind CSS.
+- ✨ **Frontend**: Aplicación web hecha en React.
 - 🔐 **Backend**: API REST construida con Spring Boot que gestiona usuarios, autenticación y datos.
 
 ---
@@ -24,12 +24,11 @@ Este es un proyecto full-stack desarrollado como parte de un trabajo integrador 
 
 ---
 
-## 🌐 Frontend (React + Tailwind)
+## 🌐 Frontend (React)
 
 ### Tecnologías
 
 - React
-- Tailwind CSS
 - PostCSS & Autoprefixer
 - Vite o Create React App (según versión final)
 
@@ -67,7 +66,7 @@ npm run start     # o npm run dev si usas Vite
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+./mvn spring-boot:run
 ```
 
 > También puedes importar `backend/` en **NetBeans**, **IntelliJ** o **VS Code con Java Extension Pack**.
@@ -129,7 +128,7 @@ El frontend consume los endpoints del backend a través de fetch/Axios usando la
 
 | Comando                      | Descripción                          |
 |------------------------------|--------------------------------------|
-| `./mvnw spring-boot:run`     | Levanta el servidor Spring Boot      |
+| `./mvn spring-boot:run`     | Levanta el servidor Spring Boot      |
 | `mvn clean install`          | Compila y empaqueta el proyecto      |
 
 ---
