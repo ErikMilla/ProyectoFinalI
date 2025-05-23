@@ -87,7 +87,7 @@ const Layout = ({ children }) => {
           </p>
           <div className="footer-social">
             <a href="https://www.facebook.com" className="facebook" target="_blank" rel="noopener noreferrer"></a>
-            <a href="https://www.instagram.com/vice_1099/" className="instagram" target="_blank" rel="noopener noreferrer"></a>
+            <a href="https://www.instagram.com/panalera_claudia/reels/" className="instagram" target="_blank" rel="noopener noreferrer"></a>
             <a href="https://wa.me/51935532263" className="whatsapp" target="_blank" rel="noopener noreferrer"></a>
           </div>
         </div>
@@ -96,9 +96,8 @@ const Layout = ({ children }) => {
           <h4>Enlaces rápidos</h4>
           <ul>
             <li><Link to="/">Inicio</Link></li>
-            <li><Link to="/pañaleria">Productos</Link></li>
-            <li><Link to="/promociones">Promociones</Link></li>
-            <li><Link to="/nosotros">Nosotros</Link></li>
+            <li><Link to="/pañaleria">Pañaleria</Link></li>
+            <li><Link to="/Higiene">Higiene</Link></li>
             <li><Link to="/contacto">Contacto</Link></li>
           </ul>
         </div>
