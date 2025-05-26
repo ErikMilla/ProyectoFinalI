@@ -1,0 +1,217 @@
+/* Navbar personalizado */
+.navbar-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 2rem;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* ← sombra más notoria */
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brand {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #f7b6b6;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.brand-highlight {
+  color: #f7b6b6;
+  font-weight: bold;
+}
+
+.nav-links-custom {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links-custom a {
+  color: #888;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links-custom a:hover {
+  color: #f7b6b6;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.icon-link {
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  transition: color 0.2s;
+}
+
+.icon-link:hover {
+  color: black;
+}
+
+/* Footer personalizado */
+/* Footer animado y colorido */
+.footer-custom {
+  background: linear-gradient(135deg, #fff2f2, #fef9f9);
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+  animation: fadeInFooter 1.2s ease-in-out;
+  border-top: 4px solid #eebbbb;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  color: #555;
+}
+
+.footer-brand {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #eaa7a6;
+  margin-bottom: 0.5rem;
+}
+
+.footer-col h4 {
+  margin-bottom: 1rem;
+  color: #96c4c4;
+  font-weight: 600;
+  font-size: 1.1rem;
+  position: relative;
+}
+
+.footer-col h4::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #eebbbb;
+  margin-top: 4px;
+  border-radius: 3px;
+  animation: growBar 1s ease;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.footer-col ul li:hover {
+  color: #eaa7a6;
+  transform: translateX(5px);
+}
+
+.footer-col a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer-col a:hover {
+  color: #eaa7a6;
+}
+
+/* Redes sociales */
+.footer-social {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  font-size: 1.8rem;
+  color: #96c4c4;
+  transition: transform 0.4s ease, color 0.3s ease;
+}
+
+.footer-social a:hover {
+  transform: rotate(12deg) scale(1.2);
+  color: #eaa7a6;
+}
+
+/* Íconos con emojis o con FontAwesome (si usas) */
+.footer-social a.facebook::before {
+  content: "📘";
+}
+
+.footer-social a.instagram::before {
+  content: "📸";
+}
+
+.footer-social a.whatsapp::before {
+  content: "📱";
+}
+
+/* Animaciones */
+@keyframes fadeInFooter {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes growBar {
+  from { width: 0; }
+  to { width: 40px; }
+}
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #f7b6b6;
+}
+
+@media (max-width: 768px) {
+  .nav-links-custom {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  .nav-links-custom.show {
+    display: flex;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav-left {
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
