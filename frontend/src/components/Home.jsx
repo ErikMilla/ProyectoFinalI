@@ -122,9 +122,6 @@ const Home = () => {
                   <span className="current-price">S/42.99</span>
                   <span className="original-price">S/54.99</span>
                 </div>
-                <button className="add-to-cart">
-                  <span>🛒</span> Añadir al carrito
-                </button>
               </div>
             </div>
 
@@ -143,9 +140,6 @@ const Home = () => {
                 <div className="product-price">
                   <span className="current-price">S/35.99</span>
                 </div>
-                <button className="add-to-cart">
-                  <span>🛒</span> Añadir al carrito
-                </button>
               </div>
             </div>
 
@@ -165,9 +159,6 @@ const Home = () => {
                 <div className="product-price">
                   <span className="current-price">S/18.50</span>
                 </div>
-                <button className="add-to-cart">
-                  <span>🛒</span> Añadir al carrito
-                </button>
               </div>
             </div>
 
@@ -188,9 +179,6 @@ const Home = () => {
                   <span className="current-price">S/69.99</span>
                   <span className="original-price">S/89.99</span>
                 </div>
-                <button className="add-to-cart">
-                  <span>🛒</span> Añadir al carrito
-                </button>
               </div>
             </div>
           </div>

@@ -1,0 +1,82 @@
+/* Estilos básicos para la página Productos */
+.productos-container {
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+.productos-container h2 {
+    color: #eaa7a6; /* Color de título similar al menú */
+    margin-bottom: 30px; /* Más espacio debajo del título */
+    text-align: center; /* Centrar título */
+}
+
+/* Estilos para el formulario de productos */
+.productos-container form {
+    display: grid;
+    gap: 20px; /* Espacio entre los campos */
+    max-width: 500px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centrar el formulario en la página */
+    padding: 20px;
+    border: 1px solid #f0f0f0; /* Borde suave */
+    border-radius: 8px; /* Bordes redondeados */
+    background-color: #fff; /* Fondo blanco para el formulario */
+}
+
+.productos-container form div {
+    display: flex;
+    flex-direction: column;
+}
+
+.productos-container form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555; /* Color de texto */
+}
+
+.productos-container form input[type="text"],
+.productos-container form input[type="number"],
+.productos-container form input[type="file"],
+.productos-container form select {
+    padding: 10px;
+    border: 1px solid #ccc; /* Borde por defecto */
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.productos-container form input[type="text"]:focus,
+.productos-container form input[type="number"]:focus,
+.productos-container form input[type="file"]:focus,
+.productos-container form select:focus {
+    border-color: #96c4c4; /* Borde al enfocar, usando el color teal */
+    outline: none; /* Remover el outline por defecto */
+    box-shadow: 0 0 5px rgba(150, 196, 196, 0.5); /* Sombra suave al enfocar */
+}
+
+/* Estilos para el botón de enviar */
+.productos-container form button[type="submit"] {
+    padding: 12px 20px;
+    background-color: #eaa7a6; /* Color rosa/salmón */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px; /* Espacio arriba del botón */
+}
+
+.productos-container form button[type="submit"]:hover {
+    background-color: #f7b6b6; /* Color más claro al pasar el mouse */
+}
+
+/* Estilos para el mensaje de estado */
+.productos-container p {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Puedes añadir aquí estilos adicionales para el formulario de productos si lo deseas */ 

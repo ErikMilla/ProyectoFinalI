@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Higiene.css';
-import shampooBebe from '../imagenes/shampoo.png';
-import pastaInfantil from '../imagenes/pasta dental.png';
-import cepilloSuave from '../imagenes/cepillo.png';
-import shampooNatural from '../imagenes/shampoon.png';
-import cepilloDedo from '../imagenes/cepillo2.png';
-import pastaDental from '../imagenes/pasta.png';
-import cepilloAdulto from '../imagenes/Cepillo3.png';
+// Importaciones de imágenes locales eliminadas, ahora se cargarán desde el backend
 
-import colinos from '../imagenes/colinos.jpg';
-import jhonson from '../imagenes/jhonson.jpg';
-import shampusito from '../imagenes/shampusito.jpg';
-import cepillo_bb from '../imagenes/cepillo_bb.png';
+// Define el puerto de tu backend Java (por defecto 8081, cámbialo si lo modificaste)
+const BACKEND_PORT = 8081;
+// Define el ID de la categoría Higiene (¡AJUSTA ESTE VALOR SI ES DIFERENTE EN TU BD!)
+const CATEGORIA_ID = 1;
 
-// Carrusel
+// Carrusel (mantener si es necesario, pero no mostrará productos de la BD)
 const Carrusel = () => {
-  const images = [cepillo_bb, jhonson, shampusito, colinos]; // Usamos las imágenes locales
+  // Si quieres que el carrusel use imágenes de productos de la BD, necesitarías otra lógica
+  const images = []; // Vacío por ahora, o podrías cargar imágenes destacadas de la BD
 
   const [current, setCurrent] = useState(0);
 
+  // Efecto para el carrusel (mantener si hay imágenes, ajustar si vienen de BD)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent(prev => (prev + 1) % images.length);
-    }, 11000);
-    return () => clearInterval(interval);
+    if (images.length > 0) {
+      const interval = setInterval(() => {
+        setCurrent(prev => (prev + 1) % images.length);
+      }, 11000);
+      return () => clearInterval(interval);
+    }
+    return () => {}; // Limpieza si no hay imágenes
   }, [images.length]);
 
   const goToSlide = index => setCurrent(index);
+
+  if (images.length === 0) return null; // No mostrar carrusel si no hay imágenes
 
   return (
     <div className="carrusel-container fade-in-carrusel">
@@ -51,42 +52,93 @@ const Carrusel = () => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`dot ${index === current ? "active" : ""}`}
+            className={`dot ${index === current ? "activo" : ""}`}
           ></button>
         ))}
       </div>
     </div>
   );
 };
-const productos = [
-  { id: 1, nombre: 'Shampoo para Bebé', tipo: 'shampoo', imagen: shampooBebe, descripcion: 'Limpieza suave sin lágrimas.', precio: 15.00, marca: 'Marca A' },
-  { id: 2, nombre: 'Pasta Dental Infantil', tipo: 'pasta', imagen: pastaInfantil, descripcion: 'Protege los dientes de leche.', precio: 12.50, marca: 'Marca B' },
-  { id: 3, nombre: 'Cepillo Suave', tipo: 'cepillo', imagen: cepilloSuave, descripcion: 'Diseñado para encías delicadas.', precio: 10.00, marca: 'Marca C' },
-  { id: 4, nombre: 'Shampoo Natural', tipo: 'shampoo', imagen: shampooNatural, descripcion: 'Ingredientes naturales para bebés.', precio: 18.00, marca: 'Marca A' },
-  { id: 5, nombre: 'Cepillo de Dedo', tipo: 'cepillo', imagen: cepilloDedo, descripcion: 'Ideal para bebés pequeños.', precio: 8.00, marca: 'Marca D' },
-  { id: 6, nombre: 'Pasta Dental', tipo: 'pasta', imagen: pastaDental, descripcion: 'Protege los dientes.', precio: 10.00, marca: 'Marca B' },
-  { id: 7, nombre: 'Cepillo de Adulto', tipo: 'cepillo', imagen: cepilloAdulto, descripcion: 'Ideal para adultos.', precio: 12.00, marca: 'Marca C' },
-];
 
-const filtros = ['Todos', 'Shampoo', 'Pasta', 'Cepillo'];
+// Datos de productos locales eliminados, ahora se cargarán de la BD
+const productos = [];
+
+const filtros = ['Todos', 'Shampoo', 'Pasta', 'Cepillo']; // Mantener si quieres filtrar por tipo en frontend
 
 const Higiene = () => {
+  const [productosHigiene, setProductosHigiene] = useState([]);
   const [filtroActivo, setFiltroActivo] = useState('Todos');
   const [busqueda, setBusqueda] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [userRole, setUserRole] = useState(localStorage.getItem('rol'));
 
-  const productosFiltrados = productos.filter((producto) => {
-    const coincideTipo = filtroActivo === 'Todos' || producto.tipo === filtroActivo.toLowerCase();
+  useEffect(() => {
+    const obtenerProductosHigiene = async () => {
+      try {
+        const response = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos/categoria/${CATEGORIA_ID}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setProductosHigiene(data);
+      } catch (error) {
+        console.error('Error al obtener productos de Higiene:', error);
+        setMensaje('Error al cargar los productos de Higiene.');
+      }
+    };
+
+    obtenerProductosHigiene();
+
+    const handleStorageChange = () => {
+      setUserRole(localStorage.getItem('rol'));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => { // Cleanup
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
+
+  const productosFiltrados = productosHigiene.filter((producto) => {
+    // Asegúrate de que las propiedades del producto (nombre, tipo) coincidan con las de tu entidad Producto.java si filtras por ellas
+    const coincideTipo = filtroActivo === 'Todos' || (producto.tipo && producto.tipo.toLowerCase() === filtroActivo.toLowerCase());
     const coincideBusqueda = busqueda.trim() === '' || (
-      producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      producto.tipo.toLowerCase().includes(busqueda.toLowerCase())
+      (producto.nombre && producto.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (producto.tipo && producto.tipo.toLowerCase().includes(busqueda.toLowerCase())) // Si tu entidad Producto tiene campo 'tipo'
     );
     return coincideTipo && coincideBusqueda;
   });
 
+  // Nueva función para agregar al carrito
+  const agregarAlCarrito = async (producto) => {
+    const idUsuario = localStorage.getItem('id');
+    if (!idUsuario) {
+      setMensaje('Debes iniciar sesión para comprar.');
+      return;
+    }
+    try {
+      const detalle = {
+        idProducto: producto.id_producto,
+        cantidad: 1
+      };
+      const res = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/${idUsuario}/agregar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(detalle)
+      });
+      if (res.ok) {
+        setMensaje('Producto añadido al carrito.');
+      } else {
+        setMensaje('Error al añadir al carrito.');
+      }
+    } catch (error) {
+      setMensaje('Error de conexión al añadir al carrito.');
+    }
+  };
+
   return (
     <div className="fade-in-up">
       {/* Carrusel */}
-      <Carrusel />
+      {/* <Carrusel /> */} {/* Descomenta si tienes imágenes para el carrusel */}
 
       {/* Barra de búsqueda */}
       <div className="barra-busqueda fade-in-down">
@@ -101,6 +153,7 @@ const Higiene = () => {
       </div>
 
       <div className="higiene-wrapper fade-in-left">
+        {/* Filtro lateral (mantener si quieres filtrar por tipo)*/}
         <aside className="filtro-lateral">
           <h3>Filtrar por tipo</h3>
           {filtros.map((tipo) => (
@@ -115,18 +168,27 @@ const Higiene = () => {
         </aside>
 
         <main className="productos-grid">
-          {productosFiltrados.map((producto) => (
-            <div key={producto.id} className="card-producto fade-in-right">
-              <img src={producto.imagen} alt={producto.nombre} />
-              <div className="contenido">
-                <h4>{producto.nombre}</h4>
-                <p>{producto.descripcion}</p>
-                <p><strong>Marca:</strong> {producto.marca}</p>
-                <p><strong>Precio:</strong> S/{producto.precio.toFixed(2)}</p>
-                <button className="btn-comprar">Comprar</button>
+          {productosFiltrados.length > 0 ? (
+            productosFiltrados.map((producto) => (
+              <div key={producto.id_producto} className="card-producto fade-in-right">
+                {/* Asegúrate de que la URL de la imagen sea accesible desde el frontend */}
+                <img src={`http://localhost:${BACKEND_PORT}${producto.imagenUrl}`} alt={producto.nombre} />
+                <div className="contenido">
+                  <h4>{producto.nombre}</h4>
+                  {/* <p>{producto.descripcion}</p> */} {/* Asegúrate de tener campo descripcion en tu entidad si lo usas */}
+                  {/* <p><strong>Marca:</strong> {producto.marca}</p> */} {/* Si quieres mostrar la marca, necesitarías cargar los datos de la marca también */}
+                  <p><strong>Precio:</strong> S/{producto.precio.toFixed(2)}</p>
+                  {/* Asegúrate de que el producto tenga campo 'precio' y sea un número */}
+                  <p><strong>Stock:</strong> {producto.stock}</p> {/* Asegúrate de que el producto tenga campo 'stock' */}
+                  {userRole === 'cliente' && (
+                    <button className="btn-comprar" onClick={() => agregarAlCarrito(producto)}>Comprar</button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>{mensaje || "No hay productos en esta categoría."}</p>
+          )}
         </main>
       </div>
     </div>

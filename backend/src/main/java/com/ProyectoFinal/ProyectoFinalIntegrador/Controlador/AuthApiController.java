@@ -41,6 +41,7 @@ public class AuthApiController {
             response.put("rol", rol);
              if (usuario != null) {
                 response.put("nombre", usuario.getNombre());
+                response.put("id", usuario.getId());
             }
             // response.put("token", "jwt-token-aqui"); // Opcional
             return ResponseEntity.ok(response);

@@ -1,4 +1,3 @@
-
 package com.ProyectoFinal.ProyectoFinalIntegrador.Modelos;
 import jakarta.persistence.*;
 import java.util.Date;
@@ -15,6 +14,7 @@ public class AppUser {
     private String email;
     private String telefono;
     private String direccion;
+    @Column(name = "contrasena")
     private String contraseña;
     private String rol;
     private Date fechacreacion;

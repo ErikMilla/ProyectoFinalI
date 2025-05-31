@@ -44,6 +44,9 @@ const LoginForm = () => {
         if (data.nombre) {
           localStorage.setItem('nombre', data.nombre);
         }
+        if (data.id) {
+          localStorage.setItem('id', data.id);
+        }
         // Disparar evento para forzar re-render en Layout
         window.dispatchEvent(new Event('storage'));
         // Si el backend devuelve el rol, redirige según el rol
