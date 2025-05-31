@@ -1,0 +1,81 @@
+/* Estilos para el layout de la intranet */
+.intranet-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Estilos para el menú lateral */
+.sidebar {
+    width: 250px;
+    background-color: #fef9f9; /* Fondo claro similar al footer */
+    padding: 20px;
+    color: #555; /* Color de texto similar al footer */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #f0f0f0; /* Borde similar al navbar */
+}
+
+.sidebar h3 {
+    color: #eaa7a6; /* Color de título similar al footer */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: 600;
+    position: relative;
+}
+
+.sidebar h3::after {
+     content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: #eebbbb; /* Línea decorativa */
+    margin-top: 4px;
+    border-radius: 3px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 15px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #555; /* Color de enlace similar al texto del footer */
+    font-size: 1.1em;
+    display: block;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+.sidebar a:hover {
+    color: #eaa7a6; /* Color al pasar el mouse similar al footer */
+}
+
+/* Estilos para el botón de cerrar sesión */
+.logout-button {
+    padding: 10px;
+    background-color: #e74c3c; /* Rojo, mantener para acción de salir */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+}
+
+/* Estilos para el contenido principal */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco para el contenido */
+} 
