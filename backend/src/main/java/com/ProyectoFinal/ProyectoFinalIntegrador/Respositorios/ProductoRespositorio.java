@@ -8,5 +8,13 @@ import java.util.List;
 
 @Repository
 public interface ProductoRespositorio extends JpaRepository<Producto, Integer> {
+    
+    // Buscar productos por categoría
     List<Producto> findByIdCategoria(int idCategoria);
-} 
+    
+    // Buscar productos por subcategoría
+    List<Producto> findByIdSubcategoria(int idSubcategoria);
+    
+    //  Buscar productos por categoría y subcategoría
+    List<Producto> findByIdCategoriaAndIdSubcategoria(int idCategoria, int idSubcategoria);
+}
