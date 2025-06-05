@@ -1,0 +1,126 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="142566B4-F586-565B-BE79-DA9FB77D5A94" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="HORARIOS_MEDICOS">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>HORARIOS_MEDICOS</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:25 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="30E9D737-0E53-9362-EF3D-912C4A94C4A4">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>HORARIOS_MEDICOS</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<defaultOntNull>true</defaultOntNull>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementDisableCache>false</autoIncrementDisableCache>
+<autoIncrementCache>20</autoIncrementCache>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="MEDICO_ID" id="E126C1EA-0FE1-8670-5AA1-FC425BD3F35E">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>HORARIOS_MEDICOS</sourceObjSchema>
+<sourceObjName>MEDICO_ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="08F8A645-AF8D-F79D-4ABF-41AF65988F0C" referredColumn="B829F415-E006-F6C2-6953-458D8CD3B426"/>
+</associations>
+</Column>
+<Column name="DIA_SEMANA" id="53BBF210-9539-CC91-D490-1CF86AAF6237">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>HORARIOS_MEDICOS</sourceObjSchema>
+<sourceObjName>DIA_SEMANA</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<constraintName>SYS_C008549</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<listOfValues>
+<valueDef value="&apos;Jueves&apos;" description=""/>
+<valueDef value="&apos;Lunes&apos;" description=""/>
+<valueDef value="&apos;Martes&apos;" description=""/>
+<valueDef value="&apos;Miércoles&apos;" description=""/>
+<valueDef value="&apos;Sábado&apos;" description=""/>
+<valueDef value="&apos;Viernes&apos;" description=""/>
+</listOfValues>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="HORA_INICIO" id="E81EF03A-8038-4550-597F-77B7CCA2E17E">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>HORARIOS_MEDICOS</sourceObjSchema>
+<sourceObjName>HORA_INICIO</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="HORA_FIN" id="84950AC3-F9B8-AC69-F36F-5A8E30496676">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>HORARIOS_MEDICOS</sourceObjSchema>
+<sourceObjName>HORA_FIN</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="4C497DE4-72A3-1AE1-3BF5-BDFD1036852D" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="HORARIOS_MEDICOS_PK">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>SYS_C008550</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:36 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="30E9D737-0E53-9362-EF3D-912C4A94C4A4"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="1D02BA42-8433-902B-FEE5-54C6783FB95F" name="FK_MEDICO">
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:38 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E126C1EA-0FE1-8670-5AA1-FC425BD3F35E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="D874164D-B2FF-011A-1999-A1A51E5B79CC" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="ESPECIALIDADES">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>ESPECIALIDADES</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:25 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="DE93EFCF-01A8-1AA1-C8BA-A7B051909813">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>ESPECIALIDADES</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<defaultOntNull>true</defaultOntNull>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementDisableCache>false</autoIncrementDisableCache>
+<autoIncrementCache>20</autoIncrementCache>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="NOMBRE" id="A0CC9872-836B-1527-2714-0E186295821A">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>ESPECIALIDADES</sourceObjSchema>
+<sourceObjName>NOMBRE</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DESCRIPCION" id="B504B4D3-0ADF-6185-7E06-B9F0F90185B2">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>ESPECIALIDADES</sourceObjSchema>
+<sourceObjName>DESCRIPCION</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:27 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT028</logicalDatatype>
+<dataTypeSize>4000</dataTypeSize>
+<ownDataTypeParameters>4000,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="DA8AF4D3-6625-543F-7EAD-B07FF61BA77C" schemaObject="AD4B0561-F390-4396-8880-EC92AFA7BAB4" name="ESPECIALIDADES_PK">
+<sourceConnName>PRUEBA_CITAS</sourceConnName>
+<sourceObjSchema>USUARIO_VICENTE</sourceObjSchema>
+<sourceObjName>SYS_C008537</sourceObjName>
+<createdBy>gv250</createdBy>
+<createdTime>2025-05-13 01:24:36 UTC</createdTime>
+<ownerDesignName>epa</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="DE93EFCF-01A8-1AA1-C8BA-A7B051909813"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
