@@ -1,7 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="6F5D1E08-A6F1-20CB-AA9A-7C28D7E776D6" mainViewID="BB7C864B-031F-A03E-21DB-6293CB49FA3B">
-<createdBy>gv250</createdBy>
-<createdTime>2025-05-13 01:24:00 UTC</createdTime>
-<ownerDesignName>epa</ownerDesignName>
-<shouldBeOpen>false</shouldBeOpen>
-</LogicalDesign>
