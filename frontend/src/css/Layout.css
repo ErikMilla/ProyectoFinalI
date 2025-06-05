@@ -52,7 +52,7 @@
 }
 
 .icon-link {
-  color: black;
+  color: #888;
   text-decoration: none;
   font-size: 1rem;
   display: flex;
@@ -62,7 +62,7 @@
 }
 
 .icon-link:hover {
-  color: black;
+  color: #f7b6b6;
 }
 
 /* Footer personalizado */

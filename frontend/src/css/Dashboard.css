@@ -1,0 +1,11 @@
+/* Estilos básicos para la página Dashboard */
+.dashboard-container {
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco */
+}
+
+.dashboard-container h2 {
+    color: #eaa7a6; /* Color de título similar al menú */
+    margin-bottom: 20px;
+}
+/* Puedes añadir más estilos aquí */ 

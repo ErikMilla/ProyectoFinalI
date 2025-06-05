@@ -69,7 +69,11 @@ const Layout = ({ children }) => {
 
         <div className="nav-right">
           <span className="icon-link"><span role="img" aria-label="search">🔍</span></span>
-          <span className="icon-link"><span role="img" aria-label="cart">🛒</span></span>
+          {isLoggedIn && (
+            <Link to="/carrito" className="icon-link">
+              <span role="img" aria-label="cart">🛒</span>
+            </Link>
+          )}
         </div>
       </nav>
 
