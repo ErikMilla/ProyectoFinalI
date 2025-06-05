@@ -15,7 +15,10 @@ public class DetalleVenta {
     @JsonIgnore
     private Venta venta;
 
-    @ManyToOne
+    @Column(name = "id_producto")
+    private int id_producto;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_producto", insertable = false, updatable = false)
     private Producto producto;
 
@@ -33,6 +36,12 @@ public class DetalleVenta {
     }
     public void setVenta(Venta venta) {
         this.venta = venta;
+    }
+    public int getId_producto() {
+        return id_producto;
+    }
+    public void setId_producto(int id_producto) {
+        this.id_producto = id_producto;
     }
     public Producto getProducto() {
         return producto;

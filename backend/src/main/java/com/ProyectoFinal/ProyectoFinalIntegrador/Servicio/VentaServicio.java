@@ -30,12 +30,33 @@ public class VentaServicio {
         return detalleVentaRepositorio.findByVenta_IdVenta(idVenta);
     }
 
-    public DetalleVenta agregarDetalle(DetalleVenta detalle) {
-        return detalleVentaRepositorio.save(detalle);
+    public DetalleVenta agregarDetalle(int idVenta, DetalleVenta detalle) {
+        int idProducto = detalle.getId_producto();
+
+        DetalleVenta existente = detalleVentaRepositorio.findByVentaAndProducto(idVenta, idProducto);
+
+        if (existente != null) {
+            existente.setCantidad(existente.getCantidad() + detalle.getCantidad());
+            return detalleVentaRepositorio.save(existente);
+        } else {
+            Venta venta = ventaRepositorio.findById(idVenta)
+                                        .orElseThrow(() -> new RuntimeException("Venta not found"));
+            detalle.setVenta(venta);
+            return detalleVentaRepositorio.save(detalle);
+        }
     }
 
     public void eliminarDetalle(int idDetalle) {
         detalleVentaRepositorio.deleteById(idDetalle);
+    }
+
+    public DetalleVenta actualizarCantidadDetalle(int idDetalle, int cantidad) {
+        return detalleVentaRepositorio.findById(idDetalle)
+                .map(detalle -> {
+                    detalle.setCantidad(cantidad);
+                    return detalleVentaRepositorio.save(detalle);
+                })
+                .orElse(null); // O manejar el caso de que no exista el detalle
     }
 
     public Venta finalizarVenta(Venta venta) {

@@ -113,7 +113,7 @@ public class CatalogoApiController {
 
     @GetMapping("/productos/categoria/{idCategoria}")
     public List<Producto> getProductosByCategoria(@PathVariable int idCategoria) {
-        return productoRespositorio.findByIdCategoria(idCategoria);
+        return productoRespositorio.findProductosByIdCategoria(idCategoria);
     }
 
     // ✅ NUEVO ENDPOINT PARA OBTENER PRODUCTOS POR SUBCATEGORÍA

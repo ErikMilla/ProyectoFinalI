@@ -1,31 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/Layout.css';
+import MiniCarrito from './MiniCarrito';
+import { useCarrito } from '../context/CarritoContext'; // Importar useCarrito del contexto
+
+const BACKEND_PORT = 8081; // Asegúrate de que este puerto sea correcto
 
 const Layout = ({ children }) => {
   const [nombre, setNombre] = useState(localStorage.getItem('nombre'));
   const [rol, setRol] = useState(localStorage.getItem('rol'));
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const isLoggedIn = !!rol;
+  // Eliminar estados locales de carrito, detalles, total, showMiniCarrito
+  // const [showMiniCarrito, setShowMiniCarrito] = useState(false);
+  // const [carrito, setCarrito] = useState(null);
+  // const [detalles, setDetalles] = useState([]);
+  // const [total, setTotal] = useState(0);
 
+  // Obtener estados y funciones del carrito desde el contexto
+  const { 
+    carrito,
+    detalles,
+    total,
+    showMiniCarrito,
+    setShowMiniCarrito,
+    fetchCarrito,
+    toggleMiniCarrito, // También se puede obtener del contexto si se define allí
+    handleAumentarCantidad, // Estas funciones de manejo de cantidad/eliminación deberían estar en el contexto o pasarse desde App/index
+    handleDisminuirCantidad,
+    eliminarDetalle,
+    finalizarCompra
+  } = useCarrito();
+
+
+  const isLoggedIn = !!rol;
+  const idUsuario = localStorage.getItem('idUsuario');
+  const navigate = useNavigate();
+
+  // Efecto para actualizar nombre y rol al cambiar localStorage
   useEffect(() => {
     const onStorage = () => {
       setNombre(localStorage.getItem('nombre'));
       setRol(localStorage.getItem('rol'));
+      // También actualizamos idUsuario aquí si es necesario
+      // setIdUsuario(localStorage.getItem('idUsuario'));
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
+  // Efecto para cargar el carrito activo al iniciar o cuando el usuario cambia
+  useEffect(() => {
+    console.log('useEffect en Layout.jsx ejecutado. isLoggedIn:', isLoggedIn, 'idUsuario:', idUsuario);
+    // Asegurarse de que el usuario esté logueado y tengamos el ID antes de intentar cargar el carrito
+    if (isLoggedIn && idUsuario) {
+      console.log('Llamando a fetchCarrito desde useEffect en Layout.jsx');
+      fetchCarrito(parseInt(idUsuario));
+    }
+  }, [isLoggedIn, idUsuario]); // Dependencias: solo se ejecuta cuando isLoggedIn o idUsuario cambian
+
+  // Eliminar la función fetchCarrito local
+  // const fetchCarrito = async (userId) => { ... };
+
   const handleLogout = () => {
     localStorage.clear();
     window.dispatchEvent(new Event('storage'));
-    window.location.href = '/';
+    navigate('/');
   };
+
+  // La lógica de toggleMiniCarrito podría estar en el contexto, pero la mantenemos aquí por ahora si maneja la navegación
+  const toggleMiniCarritoLocal = () => {
+     if (!isLoggedIn) {
+       navigate('/login');
+     } else {
+       // Llamar a toggleMiniCarrito del contexto
+       toggleMiniCarrito();
+     }
+  };
+
+  // Si toggleMiniCarrito ya está en el contexto y maneja la navegación, puedes usarlo directamente:
+  // const toggleMiniCarritoConContext = useCarrito().toggleMiniCarrito; // O similar
 
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto);
   };
+
+  // Las funciones handleAumentarCantidad, handleDisminuirCantidad, eliminarDetalle, finalizarCompra
+  // deberían pasarse al contexto para centralizar la lógica si aún no lo están.
+  // Por ahora, asumimos que si no se obtienen del contexto, se manejan aquí o se obtendrán del contexto después.
+
 
   return (
     <div className="layout">
@@ -69,17 +131,34 @@ const Layout = ({ children }) => {
 
         <div className="nav-right">
           <span className="icon-link"><span role="img" aria-label="search">🔍</span></span>
-          {isLoggedIn && (
-            <Link to="/carrito" className="icon-link">
-              <span role="img" aria-label="cart">🛒</span>
-            </Link>
-          )}
+          {/* El enlace al carrito /carrito ahora se gestiona con el botón flotante */}
         </div>
       </nav>
 
       <main className="main-content">
         {children}
       </main>
+
+      {/* Botón flotante del carrito */}
+      {isLoggedIn && (
+      <button className="floating-cart-button" onClick={toggleMiniCarritoLocal}> {/* Usar la función local o del contexto */}
+         <span role="img" aria-label="cart">🛒</span>
+          {detalles.length > 0 && <span className="cart-item-count">{detalles.length}</span>}
+      </button>
+      )}
+
+      {/* Mini Carrito Component */}
+      <MiniCarrito
+        isVisible={showMiniCarrito} // showMiniCarrito del contexto
+        onClose={() => setShowMiniCarrito(false)} // setShowMiniCarrito del contexto
+        carrito={carrito} // carrito del contexto
+        detalles={detalles} // detalles del contexto
+        total={total} // total del contexto
+        handleAumentarCantidad={handleAumentarCantidad} // Deberían venir del contexto
+        handleDisminuirCantidad={handleDisminuirCantidad} // Deberían venir del contexto
+        eliminarDetalle={eliminarDetalle} // Deberían venir del contexto
+        finalizarCompra={finalizarCompra} // Deberían venir del contexto
+      />
 
       <footer className="footer-custom">
         <div className="footer-col">
