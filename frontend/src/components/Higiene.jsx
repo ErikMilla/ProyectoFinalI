@@ -7,7 +7,7 @@ import { useCarrito } from '../context/CarritoContext';
 // Define el puerto de tu backend Java (por defecto 8081, cámbialo si lo modificaste)
 const BACKEND_PORT = 8081;
 // Define el ID de la categoría Higiene (¡AJUSTA ESTE VALOR SI ES DIFERENTE EN TU BD!)
-const CATEGORIA_ID = 1;
+const CATEGORIA_ID = 2;
 
 // Carrusel (mantener si es necesario, pero no mostrará productos de la BD)
 const Carrusel = () => {
@@ -118,11 +118,17 @@ const Higiene = () => {
   };
 
   const obtenerNombreMarca = (idMarca) => {
+    if (!Array.isArray(marcas)) {
+      return 'Marca no disponible';
+    }
     const marca = marcas.find(m => m.id_marca === idMarca);
     return marca ? marca.nombre : 'Marca no disponible';
   };
 
   const obtenerNombreSubcategoria = (idSubcategoria) => {
+    if (!Array.isArray(subcategorias)) {
+      return 'Subcategoría no disponible';
+    }
     const subcategoria = subcategorias.find(s => s.id_subcategoria === idSubcategoria);
     return subcategoria ? subcategoria.nombre : 'Subcategoría no disponible';
   };

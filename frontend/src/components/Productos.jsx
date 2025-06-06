@@ -60,10 +60,21 @@ function Productos() {
   // Efecto para filtrar subcategorías cuando cambia la categoría
   useEffect(() => {
     console.log('Filtrando subcategorías:', { categoriaId, subcategorias });
-    
+
     if (categoriaId && Array.isArray(subcategorias) && subcategorias.length > 0) {
+      let idParaFiltrar = parseInt(categoriaId);
+
+      // **MODIFICACIÓN INICIA AQUI**
+      // Intercambiar el criterio de filtrado para las categorías con IDs 1 y 2
+      if (idParaFiltrar === 1) { // Si la categoría seleccionada es la que se muestra como 'Pañalería' (ID original 1)
+        idParaFiltrar = 2; // Filtramos por las subcategorías con ID original 2 (que deberían ser 'Bebes' y 'Adultos')
+      } else if (idParaFiltrar === 2) { // Si la categoría seleccionada es la que se muestra como 'Higiene' (ID original 2)
+        idParaFiltrar = 1; // Filtramos por las subcategorías con ID original 1 (que deberían ser las de Higiene)
+      }
+      // **MODIFICACIÓN TERMINA AQUI**
+
       const subcategoriasDeLaCategoria = subcategorias.filter(
-        sub => sub.id_categoria === parseInt(categoriaId)
+        sub => sub.id_categoria === idParaFiltrar
       );
       console.log('Subcategorías filtradas:', subcategoriasDeLaCategoria);
       setSubcategoriasFiltradas(subcategoriasDeLaCategoria);
