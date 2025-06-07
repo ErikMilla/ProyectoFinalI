@@ -12,6 +12,7 @@ import Dashboard from './components/Dashboard';
 import Proveedores from './components/Proveedores';
 import Productos from './components/Productos';
 import Carrito from './components/Carrito';
+import Registro from './components/Registro';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="proveedores" element={<Proveedores />} />
           <Route path="productos" element={<Productos />} />
+          <Route path="registro" element={<Registro />} />
         </Route>
 
         <Route path="/carrito" element={<Layout><Carrito /></Layout>} />
