@@ -1,0 +1,138 @@
+.floating-cart-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff; /* Color de ejemplo, puedes ajustarlo */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Asegurarse de que esté por encima de otros elementos */
+}
+
+.floating-cart-button .cart-item-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red; /* Color para la notificación */
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.mini-carrito-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro translúcido */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinear arriba */
+    z-index: 1000; /* Asegurarse de que esté por encima de todo */
+    padding-top: 50px; /* Espacio desde arriba */
+}
+
+.mini-carrito-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%; /* Ancho en móviles */
+    max-width: 400px; /* Ancho máximo en escritorio */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.mini-carrito-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.mini-carrito-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.mini-carrito-body {
+    max-height: 300px; /* Altura máxima del cuerpo para scroll */
+    overflow-y: auto;
+}
+
+.mini-carrito-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mini-carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mini-carrito-item .item-info {
+    flex-grow: 1;
+    margin-right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mini-carrito-item .item-quantity-controls button {
+    width: 25px;
+    height: 25px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.mini-carrito-item .item-remove-btn {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.mini-carrito-footer {
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    text-align: right;
+}
+
+.mini-carrito-total strong {
+    margin-right: 10px;
+}
+
+.mini-carrito-finalizar-btn {
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+} 

@@ -25,7 +25,12 @@ const SubcategoriaManagement = () => {
       const res = await fetch(`http://localhost:${BACKEND_PORT}/api/categorias`);
       if (!res.ok) throw new Error('Error al cargar categorías');
       const data = await res.json();
-      setCategorias(data);
+      const adjustedCategoriasData = data.map(cat => {
+        if (cat.id_categoria === 2) return { ...cat, nombre: 'Pañalería' }; // Si ID 1 es Higiene en BD, mostrar como Pañalería
+        if (cat.id_categoria === 1) return { ...cat, nombre: 'Higiene' };   // Si ID 2 es Pañalería en BD, mostrar como Higiene
+        return cat; // Mantener otras categorías como están
+      });
+      setCategorias(adjustedCategoriasData.map(cat => ({ id_categoria: cat.id_categoria, nombre: cat.nombre })));
     } catch (error) {
       console.error('Error al cargar categorías:', error);
       setMensaje('Error al cargar categorías');

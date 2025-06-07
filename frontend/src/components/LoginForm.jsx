@@ -45,7 +45,7 @@ const LoginForm = () => {
           localStorage.setItem('nombre', data.nombre);
         }
         if (data.id) {
-          localStorage.setItem('id', data.id);
+          localStorage.setItem('idUsuario', data.id);
         }
         // Disparar evento para forzar re-render en Layout
         window.dispatchEvent(new Event('storage'));
