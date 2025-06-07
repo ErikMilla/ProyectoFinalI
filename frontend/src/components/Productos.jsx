@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Productos.css';
+import { useNavigate } from 'react-router-dom';
+import { useCarrito } from '../context/CarritoContext';
 
 function Productos() {
   // ===============================
@@ -32,6 +34,10 @@ function Productos() {
   const [mensaje, setMensaje] = useState('');
   const [userRole, setUserRole] = useState(localStorage.getItem('rol'));
 
+  // Navegación y Contexto del Carrito
+  const navigate = useNavigate();
+  const { fetchCarrito } = useCarrito();
+
   // ===============================
   // EFECTOS
   // ===============================
@@ -54,10 +60,21 @@ function Productos() {
   // Efecto para filtrar subcategorías cuando cambia la categoría
   useEffect(() => {
     console.log('Filtrando subcategorías:', { categoriaId, subcategorias });
-    
+
     if (categoriaId && Array.isArray(subcategorias) && subcategorias.length > 0) {
+      let idParaFiltrar = parseInt(categoriaId);
+
+      // **MODIFICACIÓN INICIA AQUI**
+      // Intercambiar el criterio de filtrado para las categorías con IDs 1 y 2
+      if (idParaFiltrar === 1) { // Si la categoría seleccionada es la que se muestra como 'Pañalería' (ID original 1)
+        idParaFiltrar = 2; // Filtramos por las subcategorías con ID original 2 (que deberían ser 'Bebes' y 'Adultos')
+      } else if (idParaFiltrar === 2) { // Si la categoría seleccionada es la que se muestra como 'Higiene' (ID original 2)
+        idParaFiltrar = 1; // Filtramos por las subcategorías con ID original 1 (que deberían ser las de Higiene)
+      }
+      // **MODIFICACIÓN TERMINA AQUI**
+
       const subcategoriasDeLaCategoria = subcategorias.filter(
-        sub => sub.id_categoria === parseInt(categoriaId)
+        sub => sub.id_categoria === idParaFiltrar
       );
       console.log('Subcategorías filtradas:', subcategoriasDeLaCategoria);
       setSubcategoriasFiltradas(subcategoriasDeLaCategoria);
@@ -77,7 +94,13 @@ function Productos() {
       // Obtener categorías
       const categoriasResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/categorias`);
       const categoriasData = await categoriasResponse.json();
-      setCategorias(categoriasData.map(cat => ({ id: cat.id_categoria, nombre: cat.nombre })));
+      // Invertir nombres para IDs 1 y 2 si es necesario para que coincidan con la visualización de catálogos
+      const adjustedCategoriasData = categoriasData.map(cat => {
+        if (cat.id_categoria === 1) return { ...cat, nombre: 'Pañalería' }; // Si ID 1 es Higiene en BD, mostrar como Pañalería
+        if (cat.id_categoria === 2) return { ...cat, nombre: 'Higiene' };   // Si ID 2 es Pañalería en BD, mostrar como Higiene
+        return cat; // Mantener otras categorías como están
+      });
+      setCategorias(adjustedCategoriasData.map(cat => ({ id_categoria: cat.id_categoria, nombre: cat.nombre })));
 
       // Obtener subcategorías
       const subcategoriasResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/subcategorias`);
@@ -88,7 +111,7 @@ function Productos() {
       // Obtener marcas
       const marcasResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/marcas`);
       const marcasData = await marcasResponse.json();
-      setMarcas(marcasData.map(marca => ({ id: marca.id_marca, nombre: marca.nombre })));
+      setMarcas(marcasData.map(marca => ({ id_marca: marca.id_marca, nombre: marca.nombre })));
 
       // Obtener productos
       const productosResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos`);
@@ -116,31 +139,64 @@ function Productos() {
   };
 
   const agregarAlCarrito = async (producto) => {
-    const idUsuario = localStorage.getItem('id');
+    const idUsuario = localStorage.getItem('idUsuario');
     if (!idUsuario) {
-      setMensaje('Debes iniciar sesión para comprar.');
+      navigate('/login');
       return;
     }
 
     try {
+      let carritoActivo = null;
+      const responseCarrito = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/activo/${idUsuario}`);
+
+      if (responseCarrito.ok) {
+        carritoActivo = await responseCarrito.json();
+      } else if (responseCarrito.status === 404) {
+        const responseCrear = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ idUsuario: parseInt(idUsuario) }),
+        });
+        if (responseCrear.ok) {
+          carritoActivo = await responseCrear.json();
+        } else {
+          console.error('Error al crear carrito:', responseCrear.statusText);
+          setMensaje('Error al agregar producto al carrito.');
+          return;
+        }
+      } else {
+        console.error('Error al obtener carrito activo:', responseCarrito.statusText);
+        setMensaje('Error al agregar producto al carrito.');
+        return;
+      }
+
       const detalle = {
-        idProducto: producto.id_producto,
+        idVenta: carritoActivo.idVenta,
+        id_producto: producto.id_producto,
         cantidad: 1
       };
 
-      const response = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/${idUsuario}/agregar`, {
+      const responseDetalle = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/detalle`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(detalle)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(detalle),
       });
 
-      if (response.ok) {
-        setMensaje('Producto añadido al carrito.');
+      if (responseDetalle.ok) {
+        setMensaje('Producto agregado al carrito!');
+        fetchCarrito(parseInt(idUsuario));
       } else {
-        setMensaje('Error al añadir al carrito.');
+        console.error('Error al agregar detalle:', responseDetalle.statusText);
+        setMensaje('Error al agregar producto al carrito.');
       }
+
     } catch (error) {
-      setMensaje('Error de conexión al añadir al carrito.');
+      console.error('Error de red al agregar al carrito:', error);
+      setMensaje('Error de conexión al agregar producto.');
     }
   };
 
@@ -188,7 +244,7 @@ function Productos() {
         limpiarFormulario();
         fetchProductos();
       } else {
-        setMensaje(`Error al agregar producto: ${data.message || response.statusText}`);
+        setMensaje(`Error al agregar producto: S/.{data.message || response.statusText}`);
       }
     } catch (error) {
       console.error('Error al agregar producto:', error);
@@ -217,12 +273,12 @@ function Productos() {
   };
 
   const obtenerNombreCategoria = (idCategoria) => {
-    const categoria = categorias.find(cat => cat.id === idCategoria);
+    const categoria = categorias.find(cat => cat.id_categoria === idCategoria);
     return categoria ? categoria.nombre : 'Desconocida';
   };
 
   const obtenerNombreMarca = (idMarca) => {
-    const marca = marcas.find(marca => marca.id === idMarca);
+    const marca = marcas.find(marca => marca.id_marca === idMarca);
     return marca ? marca.nombre : 'Desconocida';
   };
 
@@ -232,9 +288,11 @@ function Productos() {
   
   const renderTablaProductos = () => (
     <div>
-      <button onClick={() => setMostrarFormulario(true)}>
-        Agregar Nuevo Producto
-      </button>
+      {userRole === 'admin' && (
+        <button onClick={() => setMostrarFormulario(true)}>
+          Agregar Nuevo Producto
+        </button>
+      )}
       
       <h3>Lista de Productos</h3>
       
@@ -244,35 +302,48 @@ function Productos() {
             <tr>
               <th>Nombre</th>
               <th>Precio</th>
-              <th>Stock</th>
               <th>Categoría</th>
               <th>Subcategoría</th>
               <th>Marca</th>
-              <th>Acciones</th>
+              {userRole !== 'admin' && <th>Acciones</th>}
             </tr>
           </thead>
           <tbody>
             {productos.map(producto => (
               <tr key={producto.id_producto}>
                 <td>{producto.nombre}</td>
-                <td>${producto.precio}</td>
-                <td>{producto.stock}</td>
-                <td>{obtenerNombreCategoria(producto.idCategoria)}</td>
-                <td>{obtenerNombreSubcategoria(producto.idSubcategoria)}</td>
-                <td>{obtenerNombreMarca(producto.idMarca)}</td>
-                <td>
-                  {userRole === 'cliente' && (
-                    <button onClick={() => agregarAlCarrito(producto)}>
+                <td>S/.{producto.precio.toFixed(2)}</td>
+                <td>{obtenerNombreCategoria(producto.id_categoria)}</td>
+                <td>{obtenerNombreSubcategoria(producto.id_subcategoria)}</td>
+                <td>{obtenerNombreMarca(producto.id_marca)}</td>
+                {userRole !== 'admin' && (
+                  <td>
+                    <button
+                      className="btn-comprar"
+                      onClick={() => {
+                        if (!userRole) {
+                          navigate('/login');
+                        } else {
+                          agregarAlCarrito(producto);
+                        }
+                      }}
+                    >
                       Comprar
                     </button>
-                  )}
-                </td>
+                  </td>
+                )}
+                {userRole === 'admin' && (
+                  <td>
+                    <button onClick={() => {/* Lógica para editar si existe */}} disabled>Editar</button>
+                    <button onClick={() => {/* Lógica para eliminar si existe */}} disabled>Eliminar</button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p>No hay productos disponibles.</p>
+        <p>{mensaje || "No hay productos disponibles."}</p>
       )}
     </div>
   );
@@ -329,7 +400,7 @@ function Productos() {
         >
           <option value="">Seleccione una categoría</option>
           {categorias.map(cat => (
-            <option key={cat.id} value={cat.id}>
+            <option key={cat.id_categoria} value={cat.id_categoria}>
               {cat.nombre}
             </option>
           ))}
@@ -364,7 +435,7 @@ function Productos() {
         >
           <option value="">Seleccione una marca</option>
           {marcas.map(marca => (
-            <option key={marca.id} value={marca.id}>
+            <option key={marca.id_marca} value={marca.id_marca}>
               {marca.nombre}
             </option>
           ))}
@@ -388,13 +459,13 @@ function Productos() {
     <div className="productos-container">
       <h2>Gestión de Productos</h2>
 
-      {!mostrarFormulario ? renderTablaProductos() : renderFormulario()}
-
       {mensaje && (
         <p className={mensaje.includes('Error') ? 'error' : 'success'}>
           {mensaje}
         </p>
       )}
+
+      {!mostrarFormulario ? renderTablaProductos() : renderFormulario()}
     </div>
   );
 }

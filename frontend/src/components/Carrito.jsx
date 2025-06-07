@@ -95,6 +95,36 @@ const Carrito = () => {
     }
   };
 
+  const handleDisminuirCantidad = async (idDetalle, cantidad) => {
+    try {
+      const res = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/detalle/${idDetalle}/disminuir`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cantidad: cantidad - 1 })
+      });
+      if (res.ok) {
+        fetchCarrito();
+      }
+    } catch (error) {
+      setMensaje('Error al disminuir la cantidad del producto.');
+    }
+  };
+
+  const handleAumentarCantidad = async (idDetalle, cantidad) => {
+    try {
+      const res = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/detalle/${idDetalle}/aumentar`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cantidad: cantidad + 1 })
+      });
+      if (res.ok) {
+        fetchCarrito();
+      }
+    } catch (error) {
+      setMensaje('Error al aumentar la cantidad del producto.');
+    }
+  };
+
   if (!idUsuario) {
     return <div>Debes iniciar sesión para ver tu carrito.</div>;
   }
@@ -121,7 +151,11 @@ const Carrito = () => {
             {detalles.map((item) => (
               <tr key={item.id_detalle}>
                 <td>{item.producto ? item.producto.nombre : item.idProducto}</td>
-                <td>{item.cantidad}</td>
+                <td>
+                  <button onClick={() => handleDisminuirCantidad(item.id_detalle, item.cantidad)}>-</button>
+                  {item.cantidad}
+                  <button onClick={() => handleAumentarCantidad(item.id_detalle, item.cantidad)}>+</button>
+                </td>
                 <td>{item.producto ? `S/${item.producto.precio}` : ''}</td>
                 <td>
                   <button onClick={() => eliminarDetalle(item.id_detalle)}>Eliminar</button>
