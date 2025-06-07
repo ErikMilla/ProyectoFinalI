@@ -14,6 +14,7 @@ import Productos from './components/Productos';
 import Carrito from './components/Carrito';
 import Subcategoria from './components/Subcategoria';
 import Marca from './components/Marca';
+import Registro from './components/Registro';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="productos" element={<Productos />} />
           <Route path="subcategoria" element={<Subcategoria />} />
           <Route path="marca" element={<Marca />} />
+          <Route path="registro" element={<Registro />} />
         </Route>
       </Routes>
     </Router>
