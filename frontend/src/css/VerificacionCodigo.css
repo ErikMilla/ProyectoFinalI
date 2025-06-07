@@ -1,0 +1,137 @@
+.verificacion-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #aedddd, #eaa7a6);
+  padding: 2rem;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.verificacion-form {
+  background-color: white;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 1s ease-in-out;
+  animation-fill-mode: both;
+}
+
+.verificacion-form h2 {
+  text-align: center;
+  color: #96c4c4;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  opacity: 0;
+  animation: slideFadeIn 1s ease forwards;
+  animation-delay: 0.4s;
+}
+
+.form-group {
+  margin-bottom: 1.4rem;
+  opacity: 0;
+  animation: slideFadeIn 1s ease forwards;
+  animation-delay: 0.6s;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #555;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #aedddd;
+  box-shadow: 0 0 6px rgba(174, 221, 221, 0.6);
+  transform: scale(1.02);
+}
+
+.form-group input:invalid {
+  border-color: #ff6b6b;
+}
+
+.verificar-button {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #eebbbb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  opacity: 0;
+  animation: slideFadeIn 1s ease forwards;
+  animation-delay: 0.8s;
+}
+
+.verificar-button:hover:not(:disabled) {
+  background-color: #eaa7a6;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(234, 167, 166, 0.7);
+}
+
+.verificar-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 1.4rem;
+  text-align: center;
+  animation: shake 0.4s ease-in-out;
+}
+
+.success-message {
+  background-color: #51cf66;
+  color: white;
+  padding: 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 1.4rem;
+  text-align: center;
+  animation: slideFadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+} 
