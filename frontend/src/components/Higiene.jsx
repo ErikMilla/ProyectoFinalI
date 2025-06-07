@@ -265,8 +265,8 @@ const Higiene = () => {
                 <img src={`http://localhost:${BACKEND_PORT}${producto.imagenUrl}`} alt={producto.nombre} />
                 <div className="contenido">
                   <h4>{producto.nombre}</h4>
-                  <p><strong>Marca:</strong> {obtenerNombreMarca(producto.id_marca)}</p>
-                  <p><strong>Subcategoría:</strong> {obtenerNombreSubcategoria(producto.id_subcategoria)}</p>
+                  <p><strong>Marca:</strong> {obtenerNombreMarca(producto.idMarca !== undefined ? producto.idMarca : producto.id_marca)}</p>
+                  <p><strong>Subcategoría:</strong> {obtenerNombreSubcategoria(producto.idSubcategoria !== undefined ? producto.idSubcategoria : producto.id_subcategoria)}</p>
                   <p><strong>Precio:</strong> S/{producto.precio.toFixed(2)}</p>
                   <button
                     className="btn-comprar"
