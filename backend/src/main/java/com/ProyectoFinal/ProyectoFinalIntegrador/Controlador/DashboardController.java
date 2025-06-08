@@ -114,6 +114,58 @@ public class DashboardController {
         return jdbcTemplate.queryForList(sql);
     }
     
+    // NUEVO: Endpoint para obtener cantidad de productos vendidos por mes
+    @GetMapping("/cantidad-por-mes")
+    public List<Map<String, Object>> obtenerCantidadPorMes() {
+        String sql = "SELECT " +
+                    "DATE_FORMAT(v.fecha_venta, '%b') as mes, " +
+                    "COALESCE(SUM(dv.cantidad), 0) as cantidad " +
+                    "FROM ventas v " +
+                    "LEFT JOIN detalle_venta dv ON v.id_venta = dv.id_venta " +
+                    "WHERE v.fecha_venta >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 MONTH) " +
+                    "GROUP BY YEAR(v.fecha_venta), MONTH(v.fecha_venta), DATE_FORMAT(v.fecha_venta, '%b') " +
+                    "ORDER BY YEAR(v.fecha_venta), MONTH(v.fecha_venta)";
+        
+        return jdbcTemplate.queryForList(sql);
+    }
+    
+    // NUEVO: Endpoint para obtener cantidad de productos por categoría
+    @GetMapping("/cantidad-por-categoria")
+    public List<Map<String, Object>> obtenerCantidadPorCategoria() {
+        String sql = "SELECT " +
+                    "c.nombre as name, " +
+                    "COALESCE(SUM(dv.cantidad), 0) as value " +
+                    "FROM categorias c " +
+                    "LEFT JOIN productos p ON c.id_categoria = p.id_categoria " +
+                    "LEFT JOIN detalle_venta dv ON p.id_producto = dv.id_producto " +
+                    "LEFT JOIN ventas v ON dv.id_venta = v.id_venta " +
+                    "WHERE (v.fecha_venta >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR v.fecha_venta IS NULL) " +
+                    "GROUP BY c.id_categoria, c.nombre";
+        
+        return jdbcTemplate.queryForList(sql);
+    }
+    
+    // NUEVO: Endpoint para obtener resumen completo por categoría
+    @GetMapping("/resumen-categorias")
+    public List<Map<String, Object>> obtenerResumenCategorias() {
+        String sql = "SELECT " +
+                    "c.nombre as categoria, " +
+                    "COUNT(DISTINCT p.id_producto) as productos_totales, " +
+                    "COALESCE(SUM(dv.cantidad), 0) as cantidad_vendida, " +
+                    "COALESCE(SUM(dv.cantidad * p.precio), 0) as ingresos_totales, " +
+                    "COALESCE(AVG(p.precio), 0) as precio_promedio, " +
+                    "COALESCE(COUNT(DISTINCT v.id_venta), 0) as numero_ventas " +
+                    "FROM categorias c " +
+                    "LEFT JOIN productos p ON c.id_categoria = p.id_categoria " +
+                    "LEFT JOIN detalle_venta dv ON p.id_producto = dv.id_producto " +
+                    "LEFT JOIN ventas v ON dv.id_venta = v.id_venta " +
+                    "WHERE (v.fecha_venta >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR v.fecha_venta IS NULL) " +
+                    "GROUP BY c.id_categoria, c.nombre " +
+                    "ORDER BY ingresos_totales DESC";
+        
+        return jdbcTemplate.queryForList(sql);
+    }
+    
     // Endpoint para obtener estadísticas generales
     @GetMapping("/estadisticas")
     public Map<String, Object> obtenerEstadisticas() {

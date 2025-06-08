@@ -12,6 +12,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 const Dashboard = () => {
@@ -26,10 +27,14 @@ const Dashboard = () => {
   
   const [salesData, setSalesData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
+  const [quantityData, setQuantityData] = useState([]); // NUEVO
+  const [quantityByCategoryData, setQuantityByCategoryData] = useState([]); // NUEVO
+  const [categoryTableData, setCategoryTableData] = useState([]); // NUEVO
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+  const COLORS2 = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FECA57"]; // Colores para el segundo gráfico circular
   const BACKEND_URL = 'http://localhost:8081';
 
   // Función para obtener las métricas
@@ -52,7 +57,6 @@ const Dashboard = () => {
       if (!response.ok) throw new Error('Error al obtener ventas por mes');
       const data = await response.json();
       
-      // Transformar los datos para el gráfico
       const formattedData = data.map(item => ({
         name: item.mes,
         ventas: parseFloat(item.ventas)
@@ -71,7 +75,6 @@ const Dashboard = () => {
       if (!response.ok) throw new Error('Error al obtener ventas por categoría');
       const data = await response.json();
       
-      // Filtrar categorías sin ventas y formatear
       const formattedData = data
         .filter(item => parseFloat(item.value) > 0)
         .map(item => ({
@@ -85,6 +88,56 @@ const Dashboard = () => {
     }
   };
 
+  // NUEVA: Función para obtener cantidad por mes
+  const fetchCantidadPorMes = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/dashboard/cantidad-por-mes`);
+      if (!response.ok) throw new Error('Error al obtener cantidad por mes');
+      const data = await response.json();
+      
+      const formattedData = data.map(item => ({
+        name: item.mes,
+        cantidad: parseInt(item.cantidad)
+      }));
+      
+      setQuantityData(formattedData);
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+
+  // NUEVA: Función para obtener cantidad por categoría
+  const fetchCantidadPorCategoria = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/dashboard/cantidad-por-categoria`);
+      if (!response.ok) throw new Error('Error al obtener cantidad por categoría');
+      const data = await response.json();
+      
+      const formattedData = data
+        .filter(item => parseInt(item.value) > 0)
+        .map(item => ({
+          name: item.name,
+          value: parseInt(item.value)
+        }));
+      
+      setQuantityByCategoryData(formattedData);
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+
+  // NUEVA: Función para obtener resumen de categorías
+  const fetchResumenCategorias = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/dashboard/resumen-categorias`);
+      if (!response.ok) throw new Error('Error al obtener resumen de categorías');
+      const data = await response.json();
+      setCategoryTableData(data);
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+
   // Cargar todos los datos al montar el componente
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -92,7 +145,10 @@ const Dashboard = () => {
       await Promise.all([
         fetchMetricas(),
         fetchVentasPorMes(),
-        fetchVentasPorCategoria()
+        fetchVentasPorCategoria(),
+        fetchCantidadPorMes(),
+        fetchCantidadPorCategoria(),
+        fetchResumenCategorias()
       ]);
       setLoading(false);
     };
@@ -233,13 +289,13 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* Gráficos */}
+        {/* Gráficos de Ventas */}
         <section className="dashboard-section">
-          <h2 className="section-title">📈 Análisis de Rendimiento</h2>
+          <h2 className="section-title">📈 Análisis de Ventas</h2>
           <div className="charts-grid">
             <div className="chart-card">
               <div className="chart-header">
-                <h3>Pagos por Mes</h3>
+                <h3>Tendencia de Ventas (S/)</h3>
                 <select className="chart-select">
                   <option>Últimos 7 meses</option>
                   <option>Últimos 12 meses</option>
@@ -276,7 +332,7 @@ const Dashboard = () => {
 
             <div className="chart-card">
               <div className="chart-header">
-                <h3>Pagos por Categoría</h3>
+                <h3>Ventas por Categoría (S/)</h3>
                 <select className="chart-select">
                   <option>Este mes</option>
                   <option>Último trimestre</option>
@@ -311,6 +367,149 @@ const Dashboard = () => {
                   </p>
                 )}
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* NUEVA SECCIÓN: Análisis de Cantidades */}
+        <section className="dashboard-section">
+          <h2 className="section-title">📦 Análisis de Cantidades</h2>
+          <div className="charts-grid">
+            <div className="chart-card">
+              <div className="chart-header">
+                <h3>Productos Vendidos por Mes</h3>
+                <select className="chart-select">
+                  <option>Últimos 7 meses</option>
+                  <option>Últimos 12 meses</option>
+                  <option>Este año</option>
+                </select>
+              </div>
+              <div className="chart-body">
+                {quantityData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={quantityData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#666" />
+                      <YAxis stroke="#666" />
+                      <Tooltip 
+                        formatter={(value) => [`${value} unidades`, 'Cantidad']}
+                        labelStyle={{ color: '#666' }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="cantidad"
+                        stroke="#FF6B6B"
+                        strokeWidth={3}
+                        dot={{ fill: "#FF6B6B", strokeWidth: 2, r: 4 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p style={{ textAlign: 'center', color: '#666' }}>
+                    No hay datos de cantidades disponibles
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="chart-card">
+              <div className="chart-header">
+                <h3>Cantidad por Categoría</h3>
+                <select className="chart-select">
+                  <option>Este mes</option>
+                  <option>Último trimestre</option>
+                  <option>Este año</option>
+                </select>
+              </div>
+              <div className="chart-body">
+                {quantityByCategoryData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={quantityByCategoryData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {quantityByCategoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value) => [`${value} unidades`, 'Cantidad']}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p style={{ textAlign: 'center', color: '#666' }}>
+                    No hay datos de cantidades por categoría disponibles
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* NUEVA SECCIÓN: Tabla Resumen por Categoría */}
+        <section className="dashboard-section">
+          <h2 className="section-title">📋 Resumen por Categoría</h2>
+          <div className="table-container">
+            <div className="table-header">
+              <h3>Métricas detalladas por categoría</h3>
+              <button className="export-btn">
+                📥 Exportar
+              </button>
+            </div>
+            <div className="table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Categoría</th>
+                    <th>Productos</th>
+                    <th>Cantidad Vendida</th>
+                    <th>Ingresos Totales</th>
+                    <th>Precio Promedio</th>
+                    <th>N° Ventas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categoryTableData.length > 0 ? (
+                    categoryTableData.map((row, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className="category-cell">
+                            <span className="category-badge">{row.categoria}</span>
+                          </div>
+                        </td>
+                        <td>{row.productos_totales}</td>
+                        <td>
+                          <strong>{row.cantidad_vendida}</strong>
+                        </td>
+                        <td className="amount">
+                          {formatCurrency(row.ingresos_totales)}
+                        </td>
+                        <td>
+                          {formatCurrency(row.precio_promedio)}
+                        </td>
+                        <td>
+                          <span className="status-badge completado">
+                            {row.numero_ventas} ventas
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                        No hay datos de categorías disponibles
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
