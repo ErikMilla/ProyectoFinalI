@@ -21,7 +21,9 @@ function IntranetLayout() {
             <li><Link to="/intranet/dashboard">Dashboard</Link></li>
             <li><Link to="/intranet/proveedores">Proveedores</Link></li>
             <li><Link to="/intranet/productos">Productos</Link></li>
-            <li><Link to="/intranet/registro">Registro</Link></li>
+            <li><Link to="/intranet/subcategoria">Subcategorias</Link></li>
+            <li><Link to="/intranet/marca">Marcas</Link></li>
+            <li><Link to="/intranet/registro">Registro Admin</Link></li>
           </ul>
         </div>
         <button 

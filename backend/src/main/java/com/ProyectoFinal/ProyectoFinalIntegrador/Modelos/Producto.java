@@ -18,6 +18,9 @@ public class Producto {
     @Column(name = "id_categoria")
     private int idCategoria;
 
+    @Column(name = "id_subcategoria") // ✅ NUEVO CAMPO
+    private int idSubcategoria;
+
     @Column(name = "id_marca")
     private int idMarca;
 
@@ -65,6 +68,15 @@ public class Producto {
         this.idCategoria = idCategoria;
     }
 
+    // ✅ NUEVO GETTER Y SETTER PARA SUBCATEGORÍA
+    public int getIdSubcategoria() {
+        return idSubcategoria;
+    }
+
+    public void setIdSubcategoria(int idSubcategoria) {
+        this.idSubcategoria = idSubcategoria;
+    }
+
     public int getIdMarca() {
         return idMarca;
     }
@@ -80,4 +92,4 @@ public class Producto {
     public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
     }
-} 
+}
