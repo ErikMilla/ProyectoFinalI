@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import '../css/Higiene.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
+import imagen1 from "../imagenes/Higiene1.jpg"; 
+import imagen2 from "../imagenes/Higiene2.jpg";
+import imagen3 from "../imagenes/Higiene3.png";
+import imagen4 from "../imagenes/Higiene4.png";
 // Importaciones de imágenes locales eliminadas, ahora se cargarán desde el backend
 
 // Define el puerto de tu backend Java (por defecto 8081, cámbialo si lo modificaste)
@@ -9,27 +13,20 @@ const BACKEND_PORT = 8081;
 // Define el ID de la categoría Higiene (¡AJUSTA ESTE VALOR SI ES DIFERENTE EN TU BD!)
 const CATEGORIA_ID = 2;
 
-// Carrusel (mantener si es necesario, pero no mostrará productos de la BD)
 const Carrusel = () => {
-  // Si quieres que el carrusel use imágenes de productos de la BD, necesitarías otra lógica
-  const images = []; // Vacío por ahora, o podrías cargar imágenes destacadas de la BD
+  // Usamos las imágenes locales para el carrusel (solo 4 imágenes)
+  const images = [imagen1, imagen2, imagen3, imagen4];
 
   const [current, setCurrent] = useState(0);
 
-  // Efecto para el carrusel (mantener si hay imágenes, ajustar si vienen de BD)
   useEffect(() => {
-    if (images.length > 0) {
-      const interval = setInterval(() => {
-        setCurrent(prev => (prev + 1) % images.length);
-      }, 11000);
-      return () => clearInterval(interval);
-    }
-    return () => {}; // Limpieza si no hay imágenes
+    const interval = setInterval(() => {
+      setCurrent(prev => (prev + 1) % images.length);
+    }, 11000); // Ajusta el tiempo si quieres
+    return () => clearInterval(interval);
   }, [images.length]);
 
   const goToSlide = index => setCurrent(index);
-
-  if (images.length === 0) return null; // No mostrar carrusel si no hay imágenes
 
   return (
     <div className="carrusel-container fade-in-carrusel">
@@ -54,7 +51,7 @@ const Carrusel = () => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`dot ${index === current ? "activo" : ""}`}
+            className={`dot ${index === current ? "active" : ""}`}
           ></button>
         ))}
       </div>
@@ -229,7 +226,7 @@ const Higiene = () => {
   return (
     <div className="fade-in-up">
       {/* Carrusel */}
-      {/* <Carrusel /> */} {/* Descomenta si tienes imágenes para el carrusel */}
+      <Carrusel /> {/* Descomenta si tienes imágenes para el carrusel */}
 
       {/* Barra de búsqueda */}
       <div className="barra-busqueda fade-in-down">
