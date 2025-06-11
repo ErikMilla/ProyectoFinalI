@@ -13,31 +13,42 @@ import Productos from './components/Productos';
 import Carrito from './components/Carrito';
 import Subcategoria from './components/Subcategoria';
 import Marca from './components/Marca';
+import DetalleVenta from './components/DetalleVenta';
+import FormularioPago from './components/FormularioPago';
+import ProcesarPago from './components/ProcesarPago';
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* Rutas públicas con Layout */}
-        <Route path="/" element={<Layout><Home /></Layout>} />
-        <Route path="/login" element={<Layout><LoginForm /></Layout>} />
-        <Route path="/registrar" element={<Layout><RegisterForm /></Layout>} />
-        <Route path="/pañaleria" element={<Layout><Pañaleria /></Layout>} />
-        <Route path="/higiene" element={<Layout><Higiene /></Layout>} />
-        <Route path="/carrito" element={<Layout><Carrito /></Layout>} />
-
-        {/* Rutas privadas o de intranet con otro layout */}
-        <Route path="/intranet" element={<IntranetLayout />}>
-          <Route index element={<Navigate to="dashboard" />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="proveedores" element={<Proveedores />} />
-          <Route path="productos" element={<Productos />} />
-          <Route path="subcategoria" element={<Subcategoria />} />
-          <Route path="marca" element={<Marca />} />
-        </Route>
-      </Routes>
-    </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                {/* Rutas públicas con Layout */}
+                <Route path="/" element={<Layout><Home /></Layout>} />
+                <Route path="/login" element={<Layout><LoginForm /></Layout>} />
+                <Route path="/registrar" element={<Layout><RegisterForm /></Layout>} />
+                <Route path="/pañaleria" element={<Layout><Pañaleria /></Layout>} />
+                <Route path="/higiene" element={<Layout><Higiene /></Layout>} />
+                
+                {/* Rutas privadas o de intranet con otro layout */}
+                <Route path="/intranet" element={<IntranetLayout />}>
+                    <Route index element={<Navigate to="dashboard" />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="proveedores" element={<Proveedores />} />
+                    <Route path="productos" element={<Productos />} />
+                    <Route path="subcategoria" element={<Subcategoria />} />
+                    <Route path="marca" element={<Marca />} />
+                </Route>
+                
+                {/* Rutas del flujo de compra */}
+                <Route path="/carrito" element={<Layout><Carrito /></Layout>} />
+                
+                {/* Rutas para el proceso de venta */}
+                <Route path="/detalle-venta/:idVenta" element={<Layout><DetalleVenta /></Layout>} />
+                <Route path="/detalle-venta/nuevo" element={<Layout><DetalleVenta /></Layout>} />
+                <Route path="/formulario-pago" element={<Layout><FormularioPago /></Layout>} />
+                <Route path="/procesar-pago" element={<Layout><ProcesarPago /></Layout>} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
