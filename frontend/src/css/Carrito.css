@@ -1,104 +1,391 @@
-/* Carrito.css - Estilo colorido y moderno para el carrito de compras */
+/* Agregar estos estilos al final de tu Dashboard.css */
 
-.carrito-container {
-  background: #fff8fc;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(255, 182, 193, 0.15);
-  padding: 32px 24px 24px 24px;
-  margin: 32px auto;
-  max-width: 900px;
-  min-height: 350px;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-}
-
-.carrito-container h2 {
-  color: #e75480;
-  font-size: 2.2rem;
-  margin-bottom: 24px;
-  text-align: left;
-  letter-spacing: 1px;
-}
-
-.carrito-container table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.07);
-}
-
-.carrito-container th, .carrito-container td {
-  padding: 16px 12px;
-  text-align: center;
-}
-
-.carrito-container th {
-  background: #ffe0ef;
-  color: #e75480;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-bottom: 2px solid #f8b6d2;
-}
-
-.carrito-container td {
-  background: #fff8fc;
-  color: #333;
-  font-size: 1rem;
-  border-bottom: 1px solid #f8b6d2;
-}
-
-.carrito-container tr:last-child td {
-  border-bottom: none;
-}
-
-.carrito-container button {
-  background: linear-gradient(90deg, #e75480 0%, #ffb347 100%);
-  color: #fff;
+/* Botón de exportación principal */
+.export-button-main {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
   border: none;
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  padding: 8px 18px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.10);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.carrito-container button:hover {
-  background: linear-gradient(90deg, #ffb347 0%, #e75480 100%);
-  transform: translateY(-2px) scale(1.04);
+.export-button-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
-.carrito-container h3 {
-  color: #e75480;
+.export-button-main:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Modal de exportación */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
   font-size: 1.4rem;
-  margin-top: 16px;
-  margin-bottom: 0;
-  text-align: right;
+  color: #1f2937;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.carrito-container p {
-  color: #e75480;
-  font-size: 1.1rem;
-  margin: 12px 0;
-  text-align: center;
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-@media (max-width: 700px) {
-  .carrito-container {
-    padding: 12px 2px;
+.modal-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.export-option {
+  margin-bottom: 1.5rem;
+}
+
+.export-option label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.export-select,
+.export-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.export-select:focus,
+.export-input:focus {
+  outline: none;
+  border-color: #0694a2;
+  box-shadow: 0 0 0 3px rgba(6, 148, 162, 0.1);
+}
+
+.export-info {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.export-info p {
+  color: #166534;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.export-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.export-info li {
+  color: #15803d;
+  padding: 0.25rem 0;
+  font-size: 0.85rem;
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: #f9fafb;
+}
+
+.btn-cancel {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.btn-export {
+  background: linear-gradient(135deg, #0694a2 0%, #047481 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-export:hover {
+  background: linear-gradient(135deg, #047481 0%, #065a63 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-export:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animación de carga para exportación */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
   }
-  .carrito-container table, .carrito-container th, .carrito-container td {
-    font-size: 0.95rem;
-    padding: 8px 4px;
+  50% {
+    opacity: 0.5;
   }
-  .carrito-container h2 {
-    font-size: 1.3rem;
+}
+
+.export-button-main:disabled,
+.btn-export:disabled,
+.export-btn:disabled {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
   }
-  .carrito-container h3 {
-    font-size: 1.1rem;
+  
+  .modal-header {
+    padding: 1rem;
   }
-} 
+  
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .modal-footer {
+    padding: 1rem;
+    flex-direction: column;
+  }
+  
+  .btn-cancel,
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .export-button-main {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Tooltip de seguridad */
+.security-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.security-tooltip::after {
+  content: "🔒 Los datos exportados están protegidos y sanitizados";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.security-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* Indicador de proceso de exportación */
+.export-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #e5e7eb;
+  z-index: 2000;
+  overflow: hidden;
+}
+
+.export-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0694a2 0%, #10b981 50%, #0694a2 100%);
+  background-size: 200% 100%;
+  animation: progress 1.5s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Notificación de éxito */
+.export-success {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #10b981;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease;
+  z-index: 2000;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Mensaje de error */
+.export-error {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #ef4444;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: shake 0.5s ease;
+  z-index: 2000;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(10px);
+  }
+}

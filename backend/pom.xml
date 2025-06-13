@@ -87,6 +87,80 @@
             <version>5.8.16</version>
             <type>jar</type>
         </dependency>
+        <!-- Apache POI para Excel -->
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>5.4.1</version>
+</dependency>
+
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.4.1</version>
+</dependency>
+
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml-schemas</artifactId>
+    <version>4.1.2</version>
+</dependency>
+
+<!-- Para proteger archivos Excel con contraseña -->
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-scratchpad</artifactId>
+    <version>5.4.1</version>
+</dependency>
+
+<!-- Validación de datos -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+<!-- Para generar nombres de archivo únicos y seguros -->
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.19.0</version>
+</dependency>
+
+<!-- Para sanitización de datos -->
+<dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder</artifactId>
+    <version>1.3.1</version>
+</dependency>
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>33.4.8-jre</version>
+</dependency>
+<!-- Commons Compress (Requerido para OPC) -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-compress</artifactId>
+    <version>1.27.1</version>
+</dependency>
+<!-- Commons Collections4 -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-collections4</artifactId>
+    <version>4.5.0</version>
+</dependency>
+<!-- Log4j (Si no lo tienes) -->
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.24.3</version>
+</dependency>
+<!-- SparseBitSet (Requerido para algunas operaciones) -->
+<dependency>
+    <groupId>com.zaxxer</groupId>
+    <artifactId>SparseBitSet</artifactId>
+    <version>1.3</version>
+</dependency>
     </dependencies>
 
     <build>
@@ -95,7 +169,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>3.5.0</version> 
+        </plugin>
         </plugins>
-    </build>
+   
+        
+    
+</build>
+    
 
 </project>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import '../css/Dashboard.css';
 import {
@@ -16,7 +15,7 @@ import {
 } from "recharts";
 
 const Dashboard = () => {
-  // Estados para los datos
+  // Estados existentes
   const [metricas, setMetricas] = useState({
     ingresosTotales: 0,
     cambioIngresos: 0,
@@ -27,17 +26,26 @@ const Dashboard = () => {
   
   const [salesData, setSalesData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-  const [quantityData, setQuantityData] = useState([]); // NUEVO
-  const [quantityByCategoryData, setQuantityByCategoryData] = useState([]); // NUEVO
-  const [categoryTableData, setCategoryTableData] = useState([]); // NUEVO
+  const [quantityData, setQuantityData] = useState([]);
+  const [quantityByCategoryData, setQuantityByCategoryData] = useState([]);
+  const [categoryTableData, setCategoryTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // NUEVO: Estados para exportación
+  const [exportando, setExportando] = useState(false);
+  const [exportConfig, setExportConfig] = useState({
+    tipo: 'COMPLETO',
+    fechaInicio: null,
+    fechaFin: null
+  });
+  const [mostrarModalExport, setMostrarModalExport] = useState(false);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
-  const COLORS2 = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FECA57"]; // Colores para el segundo gráfico circular
+  const COLORS2 = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FECA57"];
   const BACKEND_URL = 'http://localhost:8081';
 
-  // Función para obtener las métricas
+  // Funciones existentes para cargar datos...
   const fetchMetricas = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/dashboard/metricas`);
@@ -50,7 +58,6 @@ const Dashboard = () => {
     }
   };
 
-  // Función para obtener ventas por mes
   const fetchVentasPorMes = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/dashboard/ventas-por-mes`);
@@ -68,7 +75,6 @@ const Dashboard = () => {
     }
   };
 
-  // Función para obtener ventas por categoría
   const fetchVentasPorCategoria = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/dashboard/ventas-por-categoria`);
@@ -88,7 +94,6 @@ const Dashboard = () => {
     }
   };
 
-  // NUEVA: Función para obtener cantidad por mes
   const fetchCantidadPorMes = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/dashboard/cantidad-por-mes`);
@@ -106,7 +111,6 @@ const Dashboard = () => {
     }
   };
 
-  // NUEVA: Función para obtener cantidad por categoría
   const fetchCantidadPorCategoria = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/dashboard/cantidad-por-categoria`);
@@ -126,7 +130,6 @@ const Dashboard = () => {
     }
   };
 
-  // NUEVA: Función para obtener resumen de categorías
   const fetchResumenCategorias = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/dashboard/resumen-categorias`);
@@ -135,6 +138,113 @@ const Dashboard = () => {
       setCategoryTableData(data);
     } catch (err) {
       console.error('Error:', err);
+    }
+  };
+
+  // NUEVA FUNCIÓN: Exportar a Excel
+  const exportarAExcel = async () => {
+    setExportando(true);
+    
+    try {
+      // Construir URL con parámetros
+      const params = new URLSearchParams();
+      params.append('tipoReporte', exportConfig.tipo);
+      
+      if (exportConfig.fechaInicio) {
+        params.append('fechaInicio', exportConfig.fechaInicio);
+      }
+      if (exportConfig.fechaFin) {
+        params.append('fechaFin', exportConfig.fechaFin);
+      }
+      
+      // Obtener token de autenticación si existe
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${BACKEND_URL}/api/export/dashboard/excel?${params}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Accept': 'application/octet-stream'
+        },
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al exportar el archivo');
+      }
+      
+      // Obtener el blob del response
+      const blob = await response.blob();
+      
+      // Crear URL del blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Crear elemento de descarga
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      
+      // Obtener nombre del archivo del header o usar uno por defecto
+      const contentDisposition = response.headers.get('Content-Disposition');
+      const fileNameMatch = contentDisposition && contentDisposition.match(/filename="(.+)"/);
+      const fileName = fileNameMatch ? fileNameMatch[1] : `Dashboard_${exportConfig.tipo}_${new Date().getTime()}.xlsx`;
+      
+      a.download = fileName;
+      
+      // Agregar al DOM y hacer click
+      document.body.appendChild(a);
+      a.click();
+      
+      // Limpiar
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      // Mostrar mensaje de éxito
+      alert('¡Archivo exportado exitosamente!');
+      setMostrarModalExport(false);
+      
+    } catch (error) {
+      console.error('Error al exportar:', error);
+      alert('Error al exportar el archivo: ' + error.message);
+    } finally {
+      setExportando(false);
+    }
+  };
+
+  // NUEVA FUNCIÓN: Exportar tabla específica
+  const exportarTablaCategoriasExcel = async () => {
+    if (categoryTableData.length === 0) {
+      alert('No hay datos para exportar');
+      return;
+    }
+    
+    setExportando(true);
+    
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/export/dashboard/excel?tipoReporte=CATEGORIAS`, {
+        method: 'GET',
+        headers: {
+          'Authorization': localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : ''
+        },
+        credentials: 'include'
+      });
+      
+      if (!response.ok) throw new Error('Error al exportar');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Categorias_${new Date().getTime()}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      
+      alert('¡Tabla exportada exitosamente!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al exportar la tabla');
+    } finally {
+      setExportando(false);
     }
   };
 
@@ -161,7 +271,7 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Función para formatear números
+  // Funciones de formato existentes...
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('es-PE', {
       style: 'currency',
@@ -169,13 +279,11 @@ const Dashboard = () => {
     }).format(value || 0);
   };
 
-  // Función para formatear porcentajes
   const formatPercentage = (value) => {
     const absValue = Math.abs(value || 0);
     return `${absValue.toFixed(1)}%`;
   };
 
-  // Función para obtener la fecha actual formateada
   const getCurrentDate = () => {
     const options = { 
       weekday: 'long', 
@@ -214,7 +322,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-main">
-      {/* Header */}
+      {/* Header con botón de exportación */}
       <div className="dashboard-header">
         <div className="header-title">
           <h1>Resumen del Negocio</h1>
@@ -229,6 +337,14 @@ const Dashboard = () => {
             <input type="text" placeholder="Buscar en dashboard..." className="search-input" />
             <button className="search-button">🔍</button>
           </div>
+          {/* NUEVO: Botón de exportación principal */}
+          <button 
+            className="export-button-main"
+            onClick={() => setMostrarModalExport(true)}
+            disabled={exportando}
+          >
+            {exportando ? '⏳ Exportando...' : '📥 Exportar Dashboard'}
+          </button>
           <button className="notification-button">
             <span className="notification-icon">🔔</span>
             <span className="notification-badge">3</span>
@@ -236,7 +352,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Dashboard Content */}
+      {/* Dashboard Content (existente) */}
       <div className="dashboard-content">
         {/* Métricas Principales */}
         <section className="dashboard-section">
@@ -371,7 +487,7 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* NUEVA SECCIÓN: Análisis de Cantidades */}
+        {/* Análisis de Cantidades */}
         <section className="dashboard-section">
           <h2 className="section-title">📦 Análisis de Cantidades</h2>
           <div className="charts-grid">
@@ -453,14 +569,18 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* NUEVA SECCIÓN: Tabla Resumen por Categoría */}
+        {/* Tabla Resumen por Categoría con botón de exportación */}
         <section className="dashboard-section">
           <h2 className="section-title">📋 Resumen por Categoría</h2>
           <div className="table-container">
             <div className="table-header">
               <h3>Métricas detalladas por categoría</h3>
-              <button className="export-btn">
-                📥 Exportar
+              <button 
+                className="export-btn"
+                onClick={exportarTablaCategoriasExcel}
+                disabled={exportando}
+              >
+                {exportando ? '⏳' : '📥'} Exportar
               </button>
             </div>
             <div className="table-wrapper">
@@ -514,6 +634,109 @@ const Dashboard = () => {
           </div>
         </section>
       </div>
+
+      {/* NUEVO: Modal de exportación */}
+      {mostrarModalExport && (
+        <div className="modal-overlay" onClick={() => setMostrarModalExport(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>📥 Exportar Dashboard a Excel</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setMostrarModalExport(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="export-option">
+                <label>Tipo de Reporte:</label>
+                <select 
+                  value={exportConfig.tipo}
+                  onChange={(e) => setExportConfig({...exportConfig, tipo: e.target.value})}
+                  className="export-select"
+                >
+                  <option value="COMPLETO">Reporte Completo</option>
+                  <option value="VENTAS">Solo Ventas</option>
+                  <option value="INVENTARIO">Solo Inventario</option>
+                  <option value="CATEGORIAS">Solo Categorías</option>
+                </select>
+              </div>
+              
+              <div className="export-option">
+                <label>Fecha Inicio (Opcional):</label>
+                <input 
+                  type="date"
+                  value={exportConfig.fechaInicio || ''}
+                  onChange={(e) => setExportConfig({...exportConfig, fechaInicio: e.target.value})}
+                  className="export-input"
+                />
+              </div>
+              
+              <div className="export-option">
+                <label>Fecha Fin (Opcional):</label>
+                <input 
+                  type="date"
+                  value={exportConfig.fechaFin || ''}
+                  onChange={(e) => setExportConfig({...exportConfig, fechaFin: e.target.value})}
+                  className="export-input"
+                />
+              </div>
+              
+              <div className="export-info">
+                <p>ℹ️ El archivo Excel incluirá:</p>
+                <ul>
+                  {exportConfig.tipo === 'COMPLETO' && (
+                    <>
+                      <li>✓ Resumen de métricas principales</li>
+                      <li>✓ Detalle de ventas</li>
+                      <li>✓ Inventario de productos</li>
+                      <li>✓ Análisis por categorías</li>
+                      <li>✓ Top clientes (anonimizados)</li>
+                    </>
+                  )}
+                  {exportConfig.tipo === 'VENTAS' && (
+                    <>
+                      <li>✓ Listado detallado de ventas</li>
+                      <li>✓ Totales y estadísticas</li>
+                    </>
+                  )}
+                  {exportConfig.tipo === 'INVENTARIO' && (
+                    <>
+                      <li>✓ Lista completa de productos</li>
+                      <li>✓ Niveles de stock</li>
+                      <li>✓ Alertas de stock bajo</li>
+                    </>
+                  )}
+                  {exportConfig.tipo === 'CATEGORIAS' && (
+                    <>
+                      <li>✓ Análisis por categoría</li>
+                      <li>✓ Métricas de rendimiento</li>
+                    </>
+                  )}
+                </ul>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn-cancel"
+                onClick={() => setMostrarModalExport(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn-export"
+                onClick={exportarAExcel}
+                disabled={exportando}
+              >
+                {exportando ? '⏳ Exportando...' : '📥 Exportar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
