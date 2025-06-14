@@ -10,6 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+// Importaciones de Google Guava
+import com.google.common.base.Strings;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import java.util.concurrent.TimeUnit;
+
 @RestController
 @RequestMapping("/api/subcategorias")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -18,11 +28,42 @@ public class SubcategoriaController {
     @Autowired
     private SubcategoriaRespositorio subcategoriaRepositorio;
 
+    // Cache para mejorar performance (interno, no expuesto via API)
+    private final Cache<String, List<Subcategoria>> subcategoriasCache = CacheBuilder.newBuilder()
+            .maximumSize(50)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .build();
+
+    private final Cache<Integer, Optional<Subcategoria>> subcategoriaCache = CacheBuilder.newBuilder()
+            .maximumSize(200)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .build();
+
     // Obtener todas las subcategorías
     @GetMapping
     public ResponseEntity<List<Subcategoria>> obtenerTodasLasSubcategorias() {
         try {
-            List<Subcategoria> subcategorias = subcategoriaRepositorio.findAll();
+            // Validar repositorio usando Preconditions
+            Preconditions.checkNotNull(subcategoriaRepositorio, "SubcategoriaRepositorio no puede ser null");
+
+            String cacheKey = "todas_subcategorias";
+            List<Subcategoria> subcategorias = subcategoriasCache.getIfPresent(cacheKey);
+            
+            if (subcategorias == null) {
+                subcategorias = subcategoriaRepositorio.findAll();
+                
+                // Filtrar subcategorías con nombres válidos usando Guava
+                List<Subcategoria> subcategoriasFiltradas = Lists.newArrayList();
+                for (Subcategoria subcategoria : subcategorias) {
+                    if (!Strings.isNullOrEmpty(subcategoria.getNombre())) {
+                        subcategoriasFiltradas.add(subcategoria);
+                    }
+                }
+                
+                subcategorias = ImmutableList.copyOf(subcategoriasFiltradas);
+                subcategoriasCache.put(cacheKey, subcategorias);
+            }
+
             return new ResponseEntity<>(subcategorias, HttpStatus.OK);
         } catch (Exception e) {
             System.err.println("Error al obtener subcategorías: " + e.getMessage());
@@ -34,10 +75,21 @@ public class SubcategoriaController {
     @GetMapping("/{id}")
     public ResponseEntity<Subcategoria> obtenerSubcategoriaPorId(@PathVariable("id") int id) {
         try {
-            Optional<Subcategoria> subcategoriaData = subcategoriaRepositorio.findById(id);
+            // Validar ID usando Preconditions
+            Preconditions.checkArgument(id > 0, "El ID debe ser mayor que 0, pero fue: %s", id);
+
+            Optional<Subcategoria> subcategoriaData = subcategoriaCache.getIfPresent(id);
+            
+            if (subcategoriaData == null) {
+                subcategoriaData = subcategoriaRepositorio.findById(id);
+                subcategoriaCache.put(id, subcategoriaData);
+            }
+
             return subcategoriaData
                     .map(subcategoria -> new ResponseEntity<>(subcategoria, HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             System.err.println("Error al obtener subcategoría por ID: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -48,7 +100,9 @@ public class SubcategoriaController {
     @PostMapping
     public ResponseEntity<Subcategoria> crearSubcategoria(@RequestBody Subcategoria subcategoria) {
         try {
-            if (subcategoria.getNombre() == null || subcategoria.getNombre().trim().isEmpty()) {
+            // Validaciones usando Strings de Guava
+            if (Strings.isNullOrEmpty(subcategoria.getNombre()) || 
+                Strings.nullToEmpty(subcategoria.getNombre()).trim().isEmpty()) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
@@ -57,10 +111,15 @@ public class SubcategoriaController {
             }
 
             Subcategoria nuevaSubcategoria = new Subcategoria();
-            nuevaSubcategoria.setNombre(subcategoria.getNombre().trim());
+            // Usar Strings.nullToEmpty para manejo seguro
+            nuevaSubcategoria.setNombre(Strings.nullToEmpty(subcategoria.getNombre()).trim());
             nuevaSubcategoria.setId_categoria(subcategoria.getId_categoria());
 
             Subcategoria resultado = subcategoriaRepositorio.save(nuevaSubcategoria);
+            
+            // Limpiar cache después de crear
+            invalidarCaches();
+            
             return new ResponseEntity<>(resultado, HttpStatus.CREATED);
         } catch (Exception e) {
             System.err.println("Error al crear subcategoría: " + e.getMessage());
@@ -77,8 +136,10 @@ public class SubcategoriaController {
             if (subcategoriaData.isPresent()) {
                 Subcategoria subcategoriaExistente = subcategoriaData.get();
 
-                if (subcategoria.getNombre() != null && !subcategoria.getNombre().trim().isEmpty()) {
-                    subcategoriaExistente.setNombre(subcategoria.getNombre().trim());
+                // Usar Strings de Guava para validaciones más robustas
+                if (!Strings.isNullOrEmpty(subcategoria.getNombre()) && 
+                    !Strings.nullToEmpty(subcategoria.getNombre()).trim().isEmpty()) {
+                    subcategoriaExistente.setNombre(Strings.nullToEmpty(subcategoria.getNombre()).trim());
                 }
 
                 if (subcategoria.getId_categoria() > 0) {
@@ -86,6 +147,10 @@ public class SubcategoriaController {
                 }
 
                 Subcategoria actualizada = subcategoriaRepositorio.save(subcategoriaExistente);
+                
+                // Limpiar cache después de actualizar
+                invalidarCaches();
+                
                 return new ResponseEntity<>(actualizada, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,6 +167,10 @@ public class SubcategoriaController {
         try {
             if (subcategoriaRepositorio.existsById(id)) {
                 subcategoriaRepositorio.deleteById(id);
+                
+                // Limpiar cache después de eliminar
+                invalidarCaches();
+                
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -110,5 +179,11 @@ public class SubcategoriaController {
             System.err.println("Error al eliminar subcategoría: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // Método privado para invalidar caches (no expuesto via API)
+    private void invalidarCaches() {
+        subcategoriasCache.invalidateAll();
+        subcategoriaCache.invalidateAll();
     }
 }

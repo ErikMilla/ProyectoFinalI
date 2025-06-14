@@ -2,6 +2,10 @@ package com.ProyectoFinal.ProyectoFinalIntegrador.Controlador;
 
 import com.ProyectoFinal.ProyectoFinalIntegrador.Modelos.Proveedor;
 import com.ProyectoFinal.ProyectoFinalIntegrador.Respositorios.ProveedorRepositorio;
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +27,14 @@ public class ProveedorController {
     public ResponseEntity<List<Proveedor>> obtenerTodosLosProveedores() {
         try {
             List<Proveedor> proveedores = proveedorRepositorio.findAll();
-            return new ResponseEntity<>(proveedores, HttpStatus.OK);
+            
+            // OPCIÓN 1: ImmutableList (ya la tienes)
+            List<Proveedor> proveedoresSegura = ImmutableList.copyOf(proveedores);
+            
+            // OPCIÓN 2: Lists.newArrayList() - crea una nueva lista mutable si prefieres
+            // List<Proveedor> proveedoresSegura = Lists.newArrayList(proveedores);
+            
+            return new ResponseEntity<>(proveedoresSegura, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -46,10 +57,25 @@ public class ProveedorController {
     public ResponseEntity<Proveedor> crearProveedor(@RequestBody Proveedor proveedor) {
         try {
             Proveedor nuevoProveedor = new Proveedor();
-            nuevoProveedor.setNombre_proveedor(proveedor.getNombre_proveedor());
-            nuevoProveedor.setNombre_empresa(proveedor.getNombre_empresa());
-            nuevoProveedor.setTelefono(proveedor.getTelefono());
-            nuevoProveedor.setRuc(proveedor.getRuc());
+            
+            // OPCIÓN 3: Strings.nullToEmpty() - convierte null a ""
+            nuevoProveedor.setNombre_proveedor(
+                Strings.nullToEmpty(proveedor.getNombre_proveedor())
+            );
+            
+            // OPCIÓN 4: Strings.emptyToNull() - convierte "" a null
+            nuevoProveedor.setNombre_empresa(
+                Strings.emptyToNull(proveedor.getNombre_empresa())
+            );
+            
+            // OPCIÓN 5: Manejo manual seguro con trim()
+            String telefono = proveedor.getTelefono();
+            nuevoProveedor.setTelefono(telefono != null ? telefono.trim() : null);
+            
+            // OPCIÓN 6: Combinación segura
+            String ruc = Strings.nullToEmpty(proveedor.getRuc()).trim();
+            nuevoProveedor.setRuc(Strings.emptyToNull(ruc));
+            
             return new ResponseEntity<>(proveedorRepositorio.save(nuevoProveedor), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,10 +89,20 @@ public class ProveedorController {
 
         if (proveedorData.isPresent()) {
             Proveedor proveedorActualizado = proveedorData.get();
-            proveedorActualizado.setNombre_proveedor(proveedor.getNombre_proveedor());
+            
+            // OPCIÓN 7: Objects.equal() para comparaciones seguras (opcional)
+            if (!Objects.equal(proveedorActualizado.getNombre_proveedor(), proveedor.getNombre_proveedor())) {
+                // Solo actualizar si hay cambio real
+            }
+            
+            // Usar cualquiera de las opciones anteriores
+            proveedorActualizado.setNombre_proveedor(
+                Strings.nullToEmpty(proveedor.getNombre_proveedor())
+            );
             proveedorActualizado.setNombre_empresa(proveedor.getNombre_empresa());
             proveedorActualizado.setTelefono(proveedor.getTelefono());
             proveedorActualizado.setRuc(proveedor.getRuc());
+            
             return new ResponseEntity<>(proveedorRepositorio.save(proveedorActualizado), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
