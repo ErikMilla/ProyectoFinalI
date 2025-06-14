@@ -98,7 +98,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
-	 </dependency>
         <!-- Google Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
