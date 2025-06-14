@@ -56,6 +56,6 @@ private VentaServicio ventaServicio;
 
 @GetMapping("/venta/{idVenta}")
 public @ResponseBody Venta obtenerVenta(@PathVariable int idVenta) {
-    return ventaServicio.obtenerVentaPorId(idVenta);
+    return (Venta) ventaServicio.obtenerDetallesPorVenta(idVenta);
 }
 }

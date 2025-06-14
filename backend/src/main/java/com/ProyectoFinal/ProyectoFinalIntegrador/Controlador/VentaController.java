@@ -1,8 +1,10 @@
 package com.ProyectoFinal.ProyectoFinalIntegrador.Controlador;
 
 import com.ProyectoFinal.ProyectoFinalIntegrador.Modelos.*;
-import com.ProyectoFinal.ProyectoFinalIntegrador.Repositorios.*;
-import com.ProyectoFinal.ProyectoFinalIntegrador.Servicios.*;
+import com.ProyectoFinal.ProyectoFinalIntegrador.Respositorios.*;
+import com.ProyectoFinal.ProyectoFinalIntegrador.Servicio.EmailServicio;
+import com.ProyectoFinal.ProyectoFinalIntegrador.Servicio.PagoServicio;
+import com.ProyectoFinal.ProyectoFinalIntegrador.Servicio.PdfServicio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +30,19 @@ public class VentaController {
     private DetalleVentaRepositorio detalleVentaRepositorio;
     
     @Autowired
-    private ProductoRepositorio productoRepositorio;
+    private ProductoRespositorio productoRepositorio;
     
     @Autowired
-    private AppUserRepositorio appUserRepositorio;
+    private AppUserRespositorio appUserRepositorio;
     
     @Autowired
-    private EmailService emailService;
+    private EmailServicio emailServicio;
     
     @Autowired
-    private PdfService pdfService;
+    private PdfServicio pdfServicio;
     
     @Autowired
-    private PagoService pagoService;
+    private PagoServicio pagoServicio;
 
     /**
      * Obtener una venta por ID con todos sus detalles
@@ -49,7 +51,7 @@ public class VentaController {
     public ResponseEntity<?> obtenerVentaPorId(@PathVariable int idVenta) {
         try {
             Optional<Venta> ventaOpt = ventaRepositorio.findById(idVenta);
-            
+
             if (ventaOpt.isEmpty()) {
                 logger.warn("Venta no encontrada con ID: {}", idVenta);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -77,25 +79,24 @@ public class VentaController {
                 .body(Map.of("error", "Error interno del servidor"));
         }
     }
-    
+
     /**
      * Obtener todas las ventas de un usuario
      */
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<?> obtenerVentasUsuario(@PathVariable int idUsuario) {
         try {
-            List<Venta> ventas = ventaRepositorio.findByIdUsuarioOrderByFechaDesc(idUsuario);
-            
+            List<Venta> ventas = ventaRepositorio.findByIdUsuario(idUsuario);
             logger.info("Obtenidas {} ventas para usuario ID: {}", ventas.size(), idUsuario);
             return ResponseEntity.ok(ventas);
-            
+
         } catch (Exception e) {
             logger.error("Error al obtener ventas del usuario {}: {}", idUsuario, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("error", "Error al obtener ventas"));
         }
     }
-    
+
     /**
      * Crear una nueva venta desde el carrito
      */
@@ -152,7 +153,7 @@ public class VentaController {
                 
                 BigDecimal subtotal = producto.getPrecio().multiply(BigDecimal.valueOf(cantidad));
                 detalle.setSubtotal(subtotal);
-                
+
                 detalles.add(detalle);
                 totalVenta = totalVenta.add(subtotal);
             }
@@ -161,7 +162,7 @@ public class VentaController {
             BigDecimal impuestos = totalVenta.multiply(BigDecimal.valueOf(0.18));
             BigDecimal envio = totalVenta.compareTo(BigDecimal.valueOf(100)) > 0 ? 
                 BigDecimal.ZERO : BigDecimal.valueOf(15.00);
-            
+
             BigDecimal totalConImpuestos = totalVenta.add(impuestos).add(envio);
             
             nuevaVenta.setSubtotal(totalVenta);
@@ -184,7 +185,7 @@ public class VentaController {
                 .body(Map.of("error", "Error al crear venta"));
         }
     }
-    
+
     /**
      * Procesar el pago de una venta
      */
@@ -192,7 +193,7 @@ public class VentaController {
     public ResponseEntity<?> procesarPago(
             @PathVariable int idVenta,
             @RequestBody Map<String, Object> datosPago) {
-        
+
         try {
             Optional<Venta> ventaOpt = ventaRepositorio.findById(idVenta);
             if (ventaOpt.isEmpty()) {
@@ -201,7 +202,7 @@ public class VentaController {
             }
             
             Venta venta = ventaOpt.get();
-            
+
             if (!"PENDIENTE".equals(venta.getEstado())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "La venta ya ha sido procesada"));
@@ -213,7 +214,7 @@ public class VentaController {
             Map<String, Object> datosEnvio = (Map<String, Object>) datosPago.get("datosEnvio");
             
             // Procesar pago según el método
-            Map<String, Object> resultadoPago = pagoService.procesarPago(
+            Map<String, Object> resultadoPago = pagoServicio.procesarPago(
                 metodoPago, 
                 venta.getTotal(), 
                 datosPago
@@ -243,8 +244,8 @@ public class VentaController {
                 
                 // Generar y enviar comprobante por email
                 try {
-                    byte[] pdfComprobante = pdfService.generarComprobante(ventaActualizada);
-                    emailService.enviarComprobante(
+                    byte[] pdfComprobante = pdfServicio.generarComprobante(ventaActualizada);
+                    emailServicio.enviarComprobante(
                         venta.getEmailCliente(),
                         venta.getTipoComprobante(),
                         pdfComprobante,
@@ -284,7 +285,7 @@ public class VentaController {
                 .body(Map.of("error", "Error interno al procesar pago"));
         }
     }
-    
+
     /**
      * Cancelar una venta
      */
@@ -298,7 +299,7 @@ public class VentaController {
             }
             
             Venta venta = ventaOpt.get();
-            
+
             if ("PAGADA".equals(venta.getEstado())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "No se puede cancelar una venta ya pagada"));
@@ -306,7 +307,7 @@ public class VentaController {
             
             venta.setEstado("CANCELADA");
             venta.setFechaCancelacion(LocalDateTime.now());
-            
+
             ventaRepositorio.save(venta);
             
             logger.info("Venta cancelada - ID: {}", idVenta);
@@ -318,7 +319,7 @@ public class VentaController {
                 .body(Map.of("error", "Error al cancelar venta"));
         }
     }
-    
+
     /**
      * Obtener estadísticas de ventas
      */
@@ -333,14 +334,24 @@ public class VentaController {
             
             // Ventas por estado
             Map<String, Long> ventasPorEstado = new HashMap<>();
-            ventasPorEstado.put("PENDIENTE", ventaRepositorio.countByEstado("PENDIENTE"));
-            ventasPorEstado.put("PAGADA", ventaRepositorio.countByEstado("PAGADA"));
-            ventasPorEstado.put("CANCELADA", ventaRepositorio.countByEstado("CANCELADA"));
+            List<Venta> todasVentas = ventaRepositorio.findAll();
+            
+            long pendientes = todasVentas.stream().filter(v -> "PENDIENTE".equals(v.getEstado())).count();
+            long pagadas = todasVentas.stream().filter(v -> "PAGADA".equals(v.getEstado())).count();
+            long canceladas = todasVentas.stream().filter(v -> "CANCELADA".equals(v.getEstado())).count();
+            
+            ventasPorEstado.put("PENDIENTE", pendientes);
+            ventasPorEstado.put("PAGADA", pagadas);
+            ventasPorEstado.put("CANCELADA", canceladas);
             estadisticas.put("ventasPorEstado", ventasPorEstado);
             
             // Total recaudado
-            BigDecimal totalRecaudado = ventaRepositorio.sumTotalByEstado("PAGADA");
-            estadisticas.put("totalRecaudado", totalRecaudado != null ? totalRecaudado : BigDecimal.ZERO);
+            BigDecimal totalRecaudado = todasVentas.stream()
+                .filter(v -> "PAGADA".equals(v.getEstado()))
+                .map(Venta::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            estadisticas.put("totalRecaudado", totalRecaudado);
             
             return ResponseEntity.ok(estadisticas);
             
@@ -350,9 +361,9 @@ public class VentaController {
                 .body(Map.of("error", "Error al obtener estadísticas"));
         }
     }
-    
+
     /**
-     * Método auxiliar para actualizar datos de la venta
+     * Método privado para actualizar datos de la venta
      */
     private void actualizarDatosVenta(Venta venta, Map<String, Object> datosCliente, Map<String, Object> datosEnvio) {
         // Datos del cliente

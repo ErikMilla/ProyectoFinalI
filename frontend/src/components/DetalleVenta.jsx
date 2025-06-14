@@ -123,68 +123,82 @@ const DetalleVenta = () => {
         );
     }
 
-    // Si es una venta existente
-    if (ventaExistente) {
-        return (
-            <div className="detalle-venta-container">
-                <div className="detalle-venta-card">
-                    <div className="detalle-header">
-                        <h1>Detalle de Venta #{ventaExistente.idVenta}</h1>
-                        <div className="fecha-venta">
-                            {new Date(ventaExistente.fecha).toLocaleDateString('es-PE')}
-                        </div>
-                    </div>
-
-                    <div className="productos-section">
-                        <h2>Productos Comprados</h2>
-                        <div className="productos-lista">
-                            {ventaExistente.detalles.map((detalle) => (
-                                <div key={detalle.id_detalle} className="producto-item">
-                                    <div className="producto-imagen">
-                                        <img 
-                                            src={detalle.producto.imagen || '/images/default-product.jpg'} 
-                                            alt={detalle.producto.nombre}
-                                            onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
-                                        />
-                                    </div>
-                                    <div className="producto-info">
-                                        <h3>{detalle.producto.nombre}</h3>
-                                        <p>{detalle.producto.descripcion}</p>
-                                        <div className="producto-detalles">
-                                            <span className="precio-unitario">
-                                                {formatPrice(detalle.producto.precio)} c/u
-                                            </span>
-                                            <span className="cantidad">
-                                                Cantidad: {detalle.cantidad}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="producto-total">
-                                        {formatPrice(detalle.producto.precio * detalle.cantidad)}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="resumen-total">
-                        <div className="total-final">
-                            <h3>Total: {formatPrice(ventaExistente.total)}</h3>
-                        </div>
-                    </div>
-
-                    <div className="acciones">
-                        <button 
-                            onClick={() => navigate('/')} 
-                            className="btn-secondary"
-                        >
-                            Volver al Inicio
-                        </button>
-                    </div>
+// Si es una venta existente
+if (ventaExistente) {
+  return (
+    <div className="detalle-venta-container">
+      <div className="detalle-venta-card">
+        <div className="detalle-header">
+          <h1>Detalle de Venta #{ventaExistente.idVenta}</h1>
+          <div className="fecha-venta">
+            {new Date(ventaExistente.fecha).toLocaleDateString('es-PE')}
+          </div>
+          {/* Mostrar estado de la venta */}
+          <div className={`estado-venta ${ventaExistente.estado.toLowerCase()}`}>
+            Estado: {ventaExistente.estado}
+          </div>
+        </div>
+        
+        <div className="productos-section">
+          <h2>Productos Comprados</h2>
+          <div className="productos-lista">
+            {ventaExistente.detalles.map((detalle) => (
+              <div key={detalle.id_detalle} className="producto-item">
+                <div className="producto-imagen">
+                  <img 
+                    src={detalle.producto.imagen || '/images/default-product.jpg'} 
+                    alt={detalle.producto.nombre}
+                    onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
+                  />
                 </div>
-            </div>
-        );
-    }
+                <div className="producto-info">
+                  <h3>{detalle.producto.nombre}</h3>
+                  <p>{detalle.producto.descripcion}</p>
+                  <div className="producto-detalles">
+                    <span className="precio-unitario">
+                      {formatPrice(detalle.producto.precio)} c/u
+                    </span>
+                    <span className="cantidad">
+                      Cantidad: {detalle.cantidad}
+                    </span>
+                  </div>
+                </div>
+                <div className="producto-total">
+                  {formatPrice(detalle.producto.precio * detalle.cantidad)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="resumen-total">
+          <div className="total-final">
+            <h3>Total: {formatPrice(ventaExistente.total)}</h3>
+          </div>
+        </div>
+        
+        <div className="acciones">
+          <button 
+            onClick={() => navigate('/')} 
+            className="btn-secondary"
+          >
+            Volver al Inicio
+          </button>
+          
+          {/* Mostrar botón de continuar solo si la venta está pendiente */}
+          {ventaExistente.estado === 'PENDIENTE' && (
+            <button 
+              onClick={() => navigate(`/formulario-pago?ventaId=${ventaExistente.idVenta}`)}
+              className="btn-primary"
+            >
+              Continuar con el Pago
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
     // Nueva venta desde carrito
     return (
