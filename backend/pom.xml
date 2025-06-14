@@ -99,13 +99,6 @@
             <version>3.12.0</version>
         </dependency>
         
-         <!--google guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>32.1.3-jre</version>
-        </dependency>
-    </dependencies>
  
  
 
