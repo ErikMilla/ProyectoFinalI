@@ -18,6 +18,9 @@ public class AppUser {
     private String contraseña;
     private String rol;
     private Date fechacreacion;
+    private boolean verificado;
+    @Column(name = "codigo_verificacion")
+    private String codigoVerificacion;
 
     public int getId() {
         return id;
@@ -89,6 +92,22 @@ public class AppUser {
 
     public void setFechacreacion(Date fechacreacion) {
         this.fechacreacion = fechacreacion;
+    }
+
+    public boolean isVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(boolean verificado) {
+        this.verificado = verificado;
+    }
+
+    public String getCodigoVerificacion() {
+        return codigoVerificacion;
+    }
+
+    public void setCodigoVerificacion(String codigoVerificacion) {
+        this.codigoVerificacion = codigoVerificacion;
     }
     
     

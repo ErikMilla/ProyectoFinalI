@@ -14,6 +14,7 @@ const RegisterForm = () => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,9 +27,11 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
+      setLoading(false);
       return;
     }
 
@@ -49,14 +52,23 @@ const RegisterForm = () => {
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        navigate('/login');
+        // Redirigir a la página de verificación con el email
+        navigate('/verificar-codigo', { 
+          state: { 
+            email: formData.email,
+            mensaje: 'Se ha enviado un código de verificación a tu correo electrónico.'
+          }
+        });
       } else {
-        const data = await response.json();
         setError(data.message || 'Error al registrar usuario');
       }
     } catch (err) {
       setError('Error al conectar con el servidor');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,6 +87,7 @@ const RegisterForm = () => {
             value={formData.nombre}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -86,6 +99,7 @@ const RegisterForm = () => {
             value={formData.apellidos}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -97,6 +111,7 @@ const RegisterForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -108,6 +123,7 @@ const RegisterForm = () => {
             value={formData.telefono}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -119,6 +135,7 @@ const RegisterForm = () => {
             value={formData.direccion}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -130,6 +147,7 @@ const RegisterForm = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -141,9 +159,12 @@ const RegisterForm = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
-        <button type="submit" className="register-button">Registrarse</button>
+        <button type="submit" className="register-button" disabled={loading}>
+          {loading ? 'Registrando...' : 'Registrarse'}
+        </button>
       </form>
     </div>
   );

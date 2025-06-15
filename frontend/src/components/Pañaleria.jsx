@@ -77,7 +77,7 @@ function Pañaleria() {
   const [marcas, setMarcas] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
 
-  const categorias = ["Todos", "Bebé", "Adulto", "Higiene"]; // Mantener si filtras por subcategoría o tipo localmente
+  const filtros = ["Todos", "Bebé", "Adulto", "Higiene"]; // Mantener si filtras por subcategoría o tipo localmente
 
   const navigate = useNavigate();
   const { fetchCarrito } = useCarrito();
@@ -224,38 +224,38 @@ function Pañaleria() {
   });
 
   return (
-    <div className="higiene-wrapper"> {/* Clase CSS quizás necesite ser pañaleria-wrapper */}
+
+    <div className="pañaleria-wrapper"> {/* Clase CSS quizás necesite ser pañaleria-wrapper */}
       {/* Carrusel (descomentar para mostrar)*/}
       <Carrusel />
 
-      <div className="filtro-lateral">
-        <h3>Filtrar por:</h3>
-        {categorias.map((cat) => (
-          <button
-            key={cat}
-            className={`filtro-btn ${filtroActivo === cat ? "activo" : ""}`}
-            onClick={() => setFiltroActivo(cat)}
-          >
-            {cat}
-          </button>
-        ))}
+      <div className="barra-busqueda fade-in-down">
+        <label htmlFor="busqueda">Buscar:</label>
         <input
+          id="busqueda"
           type="text"
-          placeholder="Buscar producto..."
+          placeholder="Nombre o tipo..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="barra-busqueda"
         />
       </div>
 
-      <div style={{ flex: 1 }}>
-        <div className="banner">
-          <img
-            src={bebe2Img}  // Usar la imagen importada para el banner
-            alt="Banner"
-          />
-          <div className="texto-banner">Bienvenido a Pañalera Claudia</div>
-        </div>
+      <div className="higiene-wrapper fade-in-left">
+        {/* Filtro lateral (mantener si quieres filtrar por tipo)*/}
+        <aside className="filtro-lateral">
+          <h3>Filtrar por tipo</h3>
+          {filtros.map((tipo) => (
+            <button
+              key={tipo}
+              className={`filtro-btn ${filtroActivo === tipo ? 'activo' : ''}`}
+              onClick={() => setFiltroActivo(tipo)}
+            >
+              {tipo}
+            </button>
+          ))}
+        </aside>
+
+      
 
         <div className="productos-grid">
           {productosFiltrados.length > 0 ? (

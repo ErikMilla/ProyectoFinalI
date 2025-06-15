@@ -1,46 +1,144 @@
-"use client"
-
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom"
-import "../css/Home.css"
-import { useEffect } from "react"
+import '../css/Home.css';
 
-const Home = () => {
-  // Efecto para asegurar que las animaciones se ejecuten correctamente al cargar la página
+const Inicio = () => {
   useEffect(() => {
-    // Añadir clase al body para indicar que la página está cargada
-    document.body.classList.add("page-loaded")
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://unpkg.com/@splinetool/viewer@1.10.2/build/spline-viewer.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-    // Opcional: Scroll al inicio de la página cuando se carga
-    window.scrollTo(0, 0)
+    // Intersection Observer para animación en scroll
+    const sections = document.querySelectorAll('.section');
+    
+    const options = {
+      root: null,
+      threshold: 0.3,
+    };
+
+    const handleIntersection = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+    sections.forEach(section => observer.observe(section));
+
+    // Animación de título letra por letra
+    const titulo = document.querySelector('.titulo-principal');
+    if (titulo) {
+      const texto = titulo.textContent;
+      titulo.innerHTML = '';
+      [...texto].forEach((letra, index) => {
+        const span = document.createElement('span');
+        span.textContent = letra === ' ' ? '\u00A0' : letra;
+        span.style.animationDelay = `${index * 0.1}s`;
+        span.classList.add('letra-animada');
+        titulo.appendChild(span);
+      });
+    }
 
     return () => {
-      // Limpiar al desmontar
-      document.body.classList.remove("page-loaded")
-    }
-  }, [])
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      observer.disconnect();
+    };
+  }, []);
 
   return (
-    <div className="home">
-      <div className="hero">
+    <div className="inicio-container">
+      {/* Sección Spline - Primera sección */}
+      <section className="section spline-section">
+        <div className="spline-container">
+          <spline-viewer
+            url="https://prod.spline.design/TQ3mJGeZFyUeKPaQ/scene.splinecode"
+          ></spline-viewer>
+        </div>
+       
+      </section>
+
+      {/* Sección Hero - Estadísticas y Servicios */}
+      <section className="section hero">
         <div className="hero-content">
-          <h1>
-            Todo para el cuidado
-            <span className="highlight">de tu bebé</span>
-          </h1>
-          <p>Productos de calidad premium al mejor precio del mercado</p>
-          <div className="hero-buttons">
-            <Link to="/productos" className="btn btn-primary">
-              <span>Ver productos</span>
-            </Link>
-            <Link to="/promociones" className="btn btn-secondary">
-              Ofertas especiales
-            </Link>
+          <div className="hero-main">
+            <div className="hero-text">
+              <h2>Especialistas en Cuidado Infantil</h2>
+              <p className="hero-description">
+                Más de 10 años brindando productos de calidad premium para el cuidado 
+                y bienestar de tu bebé. Confía en nuestra experiencia.
+              </p>
+            </div>
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-number">10K+</div>
+                <div className="stat-label">Familias Satisfechas</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">500+</div>
+                <div className="stat-label">Productos Disponibles</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">24/7</div>
+                <div className="stat-label">Atención al Cliente</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">15</div>
+                <div className="stat-label">Marcas Premium</div>
+              </div>
+            </div>
+          </div>
+          <div className="services-preview">
+            <h3>Nuestros Servicios</h3>
+            <div className="services-grid">
+              <div className="service-item">
+                <div className="service-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
+                    <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.79 1.1L21 9"/>
+                    <path d="M12 3v6"/>
+                  </svg>
+                </div>
+                <span>Delivery Express</span>
+              </div>
+              <div className="service-item">
+                <div className="service-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 12l2 2 4-4"/>
+                    <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                    <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                    <path d="M3 12h6m6 0h6"/>
+                  </svg>
+                </div>
+                <span>Garantía de Calidad</span>
+              </div>
+              <div className="service-item">
+                <div className="service-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                  </svg>
+                </div>
+                <span>Productos Certificados</span>
+              </div>
+              <div className="service-item">
+                <div className="service-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                </div>
+                <span>Horario Extendido</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="hero-image">
-          <img src="https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg" alt="Bebé feliz" />
-        </div>
-      </div>
+      </section>
 
       <div className="features">
         <div className="container">
@@ -215,24 +313,8 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Newsletter Section */}
-      <div className="newsletter">
-        <div className="newsletter-container">
-          <h2>Únete a nuestra newsletter</h2>
-          <p>Suscríbete para recibir las últimas novedades, consejos de cuidado para bebés y ofertas exclusivas.</p>
-          <form className="newsletter-form">
-            <input type="email" className="newsletter-input" placeholder="Tu dirección de email" required />
-            <button type="submit" className="newsletter-btn">
-              Suscribirse <span>✉️</span>
-            </button>
-          </form>
-          <p className="newsletter-disclaimer">
-            Al suscribirte, aceptas nuestra política de privacidad. Puedes darte de baja en cualquier momento.
-          </p>
-        </div>
-      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Inicio;
