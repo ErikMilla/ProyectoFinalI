@@ -19,11 +19,22 @@ const DetalleVenta = () => {
     const [loading, setLoading] = useState(true);
     const [ventaExistente, setVentaExistente] = useState(null);
 
-    // Calcular costos
+    // Calcular costos para carrito nuevo
     const subtotal = total || 0;
     const impuestos = subtotal * 0.18;
     const envio = subtotal > 100 ? 0 : 15.00;
     const totalConImpuestos = subtotal + impuestos + envio;
+
+    // Función para calcular total de venta existente
+    const calcularTotalVentaExistente = (detallesVenta) => {
+        if (!detallesVenta || !Array.isArray(detallesVenta)) return 0;
+        
+        return detallesVenta.reduce((total, detalle) => {
+            const precio = detalle.producto?.precio || 0;
+            const cantidad = detalle.cantidad || 0;
+            return total + (precio * cantidad);
+        }, 0);
+    };
 
     useEffect(() => {
         const inicializarDetalle = async () => {
@@ -52,6 +63,12 @@ const DetalleVenta = () => {
                     const response = await fetch(`http://localhost:8081/api/ventas/${idVenta}`);
                     if (response.ok) {
                         const venta = await response.json();
+                        
+                        // Calcular el total correcto si no viene desde el backend
+                        if (!venta.total || venta.total === 0) {
+                            venta.total = calcularTotalVentaExistente(venta.detalles);
+                        }
+                        
                         setVentaExistente(venta);
                     } else {
                         console.error('Venta no encontrada');
@@ -112,6 +129,70 @@ const DetalleVenta = () => {
         await eliminarDetalle(idDetalle);
     };
 
+    // Funciones para manejar edición en ventas existentes PENDIENTES
+    const handleEditarCantidadVenta = async (idDetalle, nuevaCantidad, cantidadActual) => {
+        try {
+            const response = await fetch(`http://localhost:8081/api/detalles-venta/${idDetalle}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cantidad: nuevaCantidad
+                }),
+            });
+
+            if (response.ok) {
+                // Recargar la venta para mostrar cambios
+                const ventaResponse = await fetch(`http://localhost:8081/api/ventas/${idVenta}`);
+                if (ventaResponse.ok) {
+                    const ventaActualizada = await ventaResponse.json();
+                    // Recalcular total si es necesario
+                    if (!ventaActualizada.total || ventaActualizada.total === 0) {
+                        ventaActualizada.total = calcularTotalVentaExistente(ventaActualizada.detalles);
+                    }
+                    setVentaExistente(ventaActualizada);
+                }
+            } else {
+                console.error('Error al actualizar cantidad');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const handleEliminarProductoVenta = async (idDetalle) => {
+        try {
+            const response = await fetch(`http://localhost:8081/api/detalles-venta/${idDetalle}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                // Recargar la venta para mostrar cambios
+                const ventaResponse = await fetch(`http://localhost:8081/api/ventas/${idVenta}`);
+                if (ventaResponse.ok) {
+                    const ventaActualizada = await ventaResponse.json();
+                    
+                    // Si no quedan productos, redirigir al inicio
+                    if (!ventaActualizada.detalles || ventaActualizada.detalles.length === 0) {
+                        navigate('/');
+                        return;
+                    }
+                    
+                    // Recalcular total si es necesario
+                    if (!ventaActualizada.total || ventaActualizada.total === 0) {
+                        ventaActualizada.total = calcularTotalVentaExistente(ventaActualizada.detalles);
+                    }
+                    setVentaExistente(ventaActualizada);
+                }
+            } else {
+                console.error('Error al eliminar producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     if (loading) {
         return (
             <div className="detalle-venta-container">
@@ -123,82 +204,143 @@ const DetalleVenta = () => {
         );
     }
 
-// Si es una venta existente
-if (ventaExistente) {
-  return (
-    <div className="detalle-venta-container">
-      <div className="detalle-venta-card">
-        <div className="detalle-header">
-          <h1>Detalle de Venta #{ventaExistente.idVenta}</h1>
-          <div className="fecha-venta">
-            {new Date(ventaExistente.fecha).toLocaleDateString('es-PE')}
-          </div>
-          {/* Mostrar estado de la venta */}
-          <div className={`estado-venta ${ventaExistente.estado.toLowerCase()}`}>
-            Estado: {ventaExistente.estado}
-          </div>
-        </div>
-        
-        <div className="productos-section">
-          <h2>Productos Comprados</h2>
-          <div className="productos-lista">
-            {ventaExistente.detalles.map((detalle) => (
-              <div key={detalle.id_detalle} className="producto-item">
-                <div className="producto-imagen">
-                  <img 
-                    src={detalle.producto.imagen || '/images/default-product.jpg'} 
-                    alt={detalle.producto.nombre}
-                    onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
-                  />
+    // Si es una venta existente
+    if (ventaExistente) {
+        // Calcular totales para venta existente
+        const subtotalVenta = calcularTotalVentaExistente(ventaExistente.detalles);
+        const impuestosVenta = subtotalVenta * 0.18;
+        const envioVenta = subtotalVenta > 100 ? 0 : 15.00;
+        const totalFinalVenta = subtotalVenta + impuestosVenta + envioVenta;
+
+        return (
+            <div className="detalle-venta-container">
+                <div className="detalle-venta-card">
+                    <div className="detalle-header">
+                        <h1>Detalle de Venta #{ventaExistente.idVenta}</h1>
+                        <div className="fecha-venta">
+                            {new Date(ventaExistente.fecha).toLocaleDateString('es-PE')}
+                        </div>
+                        {/* Mostrar estado de la venta */}
+                        <div className={`estado-venta ${ventaExistente.estado.toLowerCase()}`}>
+                            Estado: {ventaExistente.estado}
+                        </div>
+                    </div>
+                    
+                    <div className="productos-section">
+                        <h2>{ventaExistente.estado === 'PENDIENTE' ? 'Productos en tu carrito' : 'Productos Comprados'}</h2>
+                        <div className="productos-lista">
+                            {ventaExistente.detalles && ventaExistente.detalles.map((detalle) => (
+                                <div key={detalle.id_detalle} className={`producto-item ${ventaExistente.estado === 'PENDIENTE' ? 'editable' : ''}`}>
+                                    <div className="producto-imagen">
+                                        <img 
+                                            src={detalle.producto?.imagen || '/images/default-product.jpg'} 
+                                            alt={detalle.producto?.nombre || 'Producto'}
+                                            onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
+                                        />
+                                    </div>
+                                    <div className="producto-info">
+                                        <h3>{detalle.producto?.nombre || 'Producto'}</h3>
+                                        <p>{detalle.producto?.descripcion || 'Sin descripción'}</p>
+                                        <div className="producto-detalles">
+                                            <span className="precio-unitario">
+                                                {formatPrice(detalle.producto?.precio || 0)} {ventaExistente.estado === 'PENDIENTE' ? 'por unidad' : 'c/u'}
+                                            </span>
+                                            {ventaExistente.estado !== 'PENDIENTE' && (
+                                                <span className="cantidad">
+                                                    Cantidad: {detalle.cantidad || 0}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Mostrar controles solo si la venta está PENDIENTE */}
+                                    {ventaExistente.estado === 'PENDIENTE' ? (
+                                        <div className="producto-controles">
+                                            <div className="cantidad-controles">
+                                                <button 
+                                                    onClick={() => handleEditarCantidadVenta(detalle.id_detalle, detalle.cantidad - 1, detalle.cantidad)}
+                                                    className="btn-cantidad"
+                                                    disabled={detalle.cantidad <= 1}
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="cantidad-display">{detalle.cantidad}</span>
+                                                <button 
+                                                    onClick={() => handleEditarCantidadVenta(detalle.id_detalle, detalle.cantidad + 1, detalle.cantidad)}
+                                                    className="btn-cantidad"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                            <button 
+                                                onClick={() => handleEliminarProductoVenta(detalle.id_detalle)}
+                                                className="btn-eliminar"
+                                                title="Eliminar producto"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    ) : null}
+                                    
+                                    <div className="producto-total">
+                                        {formatPrice((detalle.producto?.precio || 0) * (detalle.cantidad || 0))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    {/* Agregar desglose de costos para venta existente */}
+                    <div className="resumen-costos">
+                        <div className="costo-linea">
+                            <span>Subtotal:</span>
+                            <span>{formatPrice(subtotalVenta)}</span>
+                        </div>
+                        <div className="costo-linea">
+                            <span>IGV (18%):</span>
+                            <span>{formatPrice(impuestosVenta)}</span>
+                        </div>
+                        <div className="costo-linea">
+                            <span>Envío:</span>
+                            <span>{envioVenta > 0 ? formatPrice(envioVenta) : 'Gratis'}</span>
+                        </div>
+                        <div className="costo-linea total">
+                            <span>Total:</span>
+                            <span>{formatPrice(totalFinalVenta)}</span>
+                        </div>
+                    </div>
+                    
+                    {/* Agregar información de envío también para venta existente */}
+                    <div className="info-envio">
+                        <div className="info-card">
+                            <h3>🚚 Información de Envío</h3>
+                            <p>Tiempo estimado: 2-3 días hábiles</p>
+                            <p>Envío gratuito para compras mayores a S/ 100.00</p>
+                        </div>
+                    </div>
+                    
+                    <div className="acciones">
+                        <button 
+                            onClick={() => navigate('/')} 
+                            className="btn-secondary"
+                        >
+                            Volver al Inicio
+                        </button>
+                        
+                        {/* Mostrar botón de continuar solo si la venta está pendiente */}
+                        {ventaExistente.estado === 'PENDIENTE' && (
+                            <button 
+                                onClick={() => navigate(`/formulario-pago?ventaId=${ventaExistente.idVenta}`)}
+                                className="btn-primary"
+                            >
+                                Continuar con el Pago
+                            </button>
+                        )}
+                    </div>
                 </div>
-                <div className="producto-info">
-                  <h3>{detalle.producto.nombre}</h3>
-                  <p>{detalle.producto.descripcion}</p>
-                  <div className="producto-detalles">
-                    <span className="precio-unitario">
-                      {formatPrice(detalle.producto.precio)} c/u
-                    </span>
-                    <span className="cantidad">
-                      Cantidad: {detalle.cantidad}
-                    </span>
-                  </div>
-                </div>
-                <div className="producto-total">
-                  {formatPrice(detalle.producto.precio * detalle.cantidad)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="resumen-total">
-          <div className="total-final">
-            <h3>Total: {formatPrice(ventaExistente.total)}</h3>
-          </div>
-        </div>
-        
-        <div className="acciones">
-          <button 
-            onClick={() => navigate('/')} 
-            className="btn-secondary"
-          >
-            Volver al Inicio
-          </button>
-          
-          {/* Mostrar botón de continuar solo si la venta está pendiente */}
-          {ventaExistente.estado === 'PENDIENTE' && (
-            <button 
-              onClick={() => navigate(`/formulario-pago?ventaId=${ventaExistente.idVenta}`)}
-              className="btn-primary"
-            >
-              Continuar con el Pago
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+            </div>
+        );
+    }
 
     // Nueva venta desde carrito
     return (
