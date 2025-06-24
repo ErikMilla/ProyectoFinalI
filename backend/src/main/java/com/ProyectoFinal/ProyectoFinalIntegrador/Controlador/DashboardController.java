@@ -18,6 +18,39 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.Cache;
 import java.util.concurrent.TimeUnit;
 
+// Importaciones para Excel (Apache POI) - AGREGAR DESPUÉS DE LAS IMPORTACIONES EXISTENTES
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+// Importaciones para PDF (iText)
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+// Importaciones adicionales para archivos
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
 @RestController
 @RequestMapping("/api/dashboard")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -284,4 +317,511 @@ public class DashboardController {
                 .put("hitRate", cache.stats().hitRate())
                 .build();
     }
+    // ===============================
+// ENDPOINTS PARA EXPORTAR REPORTES
+// ===============================
+
+@GetMapping("/export/metricas/excel")
+public ResponseEntity<byte[]> exportarMetricasExcel() {
+    try {
+        Map<String, Object> metricas = obtenerMetricas();
+        List<Map<String, Object>> ventasPorMes = obtenerVentasPorMes();
+        List<Map<String, Object>> ventasPorCategoria = obtenerVentasPorCategoria();
+
+        byte[] excelData = generarExcelMetricas(metricas, ventasPorMes, ventasPorCategoria);
+
+        String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String fileName = "dashboard_metricas_" + fecha + ".xlsx";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelData);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+@GetMapping("/export/metricas/pdf")
+public ResponseEntity<byte[]> exportarMetricasPdf() {
+    try {
+        Map<String, Object> metricas = obtenerMetricas();
+        List<Map<String, Object>> ventasPorMes = obtenerVentasPorMes();
+        List<Map<String, Object>> ventasPorCategoria = obtenerVentasPorCategoria();
+
+        byte[] pdfData = generarPdfMetricas(metricas, ventasPorMes, ventasPorCategoria);
+
+        String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String fileName = "dashboard_metricas_" + fecha + ".pdf";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfData);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+@GetMapping("/export/categorias/excel")
+public ResponseEntity<byte[]> exportarResumenCategoriasExcel() {
+    try {
+        List<Map<String, Object>> resumenCategorias = obtenerResumenCategorias();
+
+        byte[] excelData = generarExcelResumenCategorias(resumenCategorias);
+
+        String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String fileName = "resumen_categorias_" + fecha + ".xlsx";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelData);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+@GetMapping("/export/categorias/pdf")
+public ResponseEntity<byte[]> exportarResumenCategoriasPdf() {
+    try {
+        List<Map<String, Object>> resumenCategorias = obtenerResumenCategorias();
+
+        byte[] pdfData = generarPdfResumenCategorias(resumenCategorias);
+
+        String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String fileName = "resumen_categorias_" + fecha + ".pdf";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfData);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+// ===============================
+// MÉTODOS PARA GENERAR REPORTES EXCEL
+// ===============================
+
+
+private byte[] generarExcelMetricas(Map<String, Object> metricas, 
+                                   List<Map<String, Object>> ventasPorMes,
+                                   List<Map<String, Object>> ventasPorCategoria) throws IOException {
+    
+    Workbook workbook = new XSSFWorkbook();
+    
+    // Hoja 1: Métricas Generales
+    Sheet metricasSheet = workbook.createSheet("Métricas Generales");
+    crearHojaMetricas(metricasSheet, metricas, workbook);
+    
+    // Hoja 2: Ventas por Mes
+    Sheet ventasMesSheet = workbook.createSheet("Ventas por Mes");
+    crearHojaVentasPorMes(ventasMesSheet, ventasPorMes, workbook);
+    
+    // Hoja 3: Ventas por Categoría
+    Sheet ventasCatSheet = workbook.createSheet("Ventas por Categoría");
+    crearHojaVentasPorCategoria(ventasCatSheet, ventasPorCategoria, workbook);
+    
+    // Convertir a bytes
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    workbook.write(outputStream);
+    workbook.close();
+    
+    return outputStream.toByteArray();
+}
+
+private byte[] generarExcelResumenCategorias(List<Map<String, Object>> resumenCategorias) throws IOException {
+    
+    Workbook workbook = new XSSFWorkbook();
+    Sheet sheet = workbook.createSheet("Resumen por Categorías");
+    
+    // Crear estilo para el encabezado
+    CellStyle headerStyle = workbook.createCellStyle();
+    org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+    headerFont.setBold(true);
+    headerFont.setFontHeightInPoints((short) 12);
+    headerStyle.setFont(headerFont);
+    headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    
+    // Crear fila de encabezado
+    Row headerRow = sheet.createRow(0);
+    String[] headers = {"Categoría", "Productos Totales", "Cantidad Vendida", 
+                       "Ingresos Totales", "Precio Promedio", "Número de Ventas"};
+    
+    for (int i = 0; i < headers.length; i++) {
+        Cell cell = headerRow.createCell(i);
+        cell.setCellValue(headers[i]);
+        cell.setCellStyle(headerStyle);
+    }
+    
+    // Llenar datos
+    int rowNum = 1;
+    for (Map<String, Object> categoria : resumenCategorias) {
+        Row row = sheet.createRow(rowNum++);
+        
+        row.createCell(0).setCellValue((String) categoria.get("categoria"));
+        row.createCell(1).setCellValue(((Number) categoria.get("productos_totales")).intValue());
+        row.createCell(2).setCellValue(((Number) categoria.get("cantidad_vendida")).intValue());
+        row.createCell(3).setCellValue(((Number) categoria.get("ingresos_totales")).doubleValue());
+        row.createCell(4).setCellValue(((Number) categoria.get("precio_promedio")).doubleValue());
+        row.createCell(5).setCellValue(((Number) categoria.get("numero_ventas")).intValue());
+    }
+    
+    // Ajustar ancho de columnas
+    for (int i = 0; i < headers.length; i++) {
+        sheet.autoSizeColumn(i);
+    }
+    
+    // Convertir a bytes
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    workbook.write(outputStream);
+    workbook.close();
+    
+    return outputStream.toByteArray();
+}
+
+private void crearHojaMetricas(Sheet sheet, Map<String, Object> metricas, Workbook workbook) {
+    // Estilo para títulos
+    CellStyle titleStyle = workbook.createCellStyle();
+    org.apache.poi.ss.usermodel.Font titleFont = workbook.createFont();
+    titleFont.setBold(true);
+    titleFont.setFontHeightInPoints((short) 14);
+    titleStyle.setFont(titleFont);
+    
+    // Estilo para valores
+    CellStyle valueStyle = workbook.createCellStyle();
+    org.apache.poi.ss.usermodel.Font valueFont = workbook.createFont();
+    valueFont.setFontHeightInPoints((short) 12);
+    valueStyle.setFont(valueFont);
+    
+    int rowNum = 0;
+    
+    // Título principal
+    Row titleRow = sheet.createRow(rowNum++);
+    Cell titleCell = titleRow.createCell(0);
+    titleCell.setCellValue("MÉTRICAS DEL DASHBOARD");
+    titleCell.setCellStyle(titleStyle);
+    
+    rowNum++; // Fila vacía
+    
+    // Métricas
+    String[] metricNames = {"Ingresos Totales", "Cambio en Ingresos (%)", 
+                           "Pedidos Completados", "Nuevos Clientes", "Productos Vendidos"};
+    String[] metricKeys = {"ingresosTotales", "cambioIngresos", 
+                          "pedidosCompletados", "nuevosClientes", "productosVendidos"};
+    
+    for (int i = 0; i < metricNames.length; i++) {
+        Row row = sheet.createRow(rowNum++);
+        
+        Cell nameCell = row.createCell(0);
+        nameCell.setCellValue(metricNames[i]);
+        nameCell.setCellStyle(titleStyle);
+        
+        Cell valueCell = row.createCell(1);
+        Object value = metricas.get(metricKeys[i]);
+        if (value instanceof Number) {
+            valueCell.setCellValue(((Number) value).doubleValue());
+        } else {
+            valueCell.setCellValue(value != null ? value.toString() : "0");
+        }
+        valueCell.setCellStyle(valueStyle);
+    }
+    
+    // Ajustar columnas
+    sheet.autoSizeColumn(0);
+    sheet.autoSizeColumn(1);
+}
+
+private void crearHojaVentasPorMes(Sheet sheet, List<Map<String, Object>> ventasPorMes, Workbook workbook) {
+    // Crear estilo para el encabezado
+    CellStyle headerStyle = workbook.createCellStyle();
+    org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+    headerFont.setBold(true);
+    headerFont.setFontHeightInPoints((short) 12);
+    headerStyle.setFont(headerFont);
+    headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    
+    // Crear fila de encabezado
+    Row headerRow = sheet.createRow(0);
+    headerRow.createCell(0).setCellValue("Mes");
+    headerRow.createCell(1).setCellValue("Ventas");
+    headerRow.getCell(0).setCellStyle(headerStyle);
+    headerRow.getCell(1).setCellStyle(headerStyle);
+    
+    // Llenar datos
+    int rowNum = 1;
+    for (Map<String, Object> venta : ventasPorMes) {
+        Row row = sheet.createRow(rowNum++);
+        row.createCell(0).setCellValue((String) venta.get("mes"));
+        row.createCell(1).setCellValue(((Number) venta.get("ventas")).doubleValue());
+    }
+    
+    // Ajustar columnas
+    sheet.autoSizeColumn(0);
+    sheet.autoSizeColumn(1);
+}
+
+private void crearHojaVentasPorCategoria(Sheet sheet, List<Map<String, Object>> ventasPorCategoria, Workbook workbook) {
+    // Crear estilo para el encabezado
+    CellStyle headerStyle = workbook.createCellStyle();
+    org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+    headerFont.setBold(true);
+    headerFont.setFontHeightInPoints((short) 12);
+    headerStyle.setFont(headerFont);
+    headerStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex());
+    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    
+    // Crear fila de encabezado
+    Row headerRow = sheet.createRow(0);
+    headerRow.createCell(0).setCellValue("Categoría");
+    headerRow.createCell(1).setCellValue("Valor de Ventas");
+    headerRow.getCell(0).setCellStyle(headerStyle);
+    headerRow.getCell(1).setCellStyle(headerStyle);
+    
+    // Llenar datos
+    int rowNum = 1;
+    for (Map<String, Object> categoria : ventasPorCategoria) {
+        Row row = sheet.createRow(rowNum++);
+        row.createCell(0).setCellValue((String) categoria.get("name"));
+        row.createCell(1).setCellValue(((Number) categoria.get("value")).doubleValue());
+    }
+    
+    // Ajustar columnas
+    sheet.autoSizeColumn(0);
+    sheet.autoSizeColumn(1);
+}
+
+// ===============================
+// MÉTODOS PARA GENERAR REPORTES PDF
+// ===============================
+
+
+private byte[] generarPdfMetricas(Map<String, Object> metricas,
+                                 List<Map<String, Object>> ventasPorMes,
+                                 List<Map<String, Object>> ventasPorCategoria) throws DocumentException, IOException {
+    
+    Document document = new Document(PageSize.A4);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PdfWriter.getInstance(document, outputStream);
+    
+    document.open();
+    
+    // Título principal
+    com.itextpdf.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
+    Paragraph title = new Paragraph("REPORTE DE MÉTRICAS DEL DASHBOARD", titleFont);
+    title.setAlignment(Element.ALIGN_CENTER);
+    title.setSpacingAfter(20);
+    document.add(title);
+    
+    // Fecha
+    com.itextpdf.text.Font dateFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.GRAY);
+    String fechaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+    Paragraph dateParagraph = new Paragraph("Generado el: " + fechaActual, dateFont);
+    dateParagraph.setAlignment(Element.ALIGN_RIGHT);
+    dateParagraph.setSpacingAfter(20);
+    document.add(dateParagraph);
+    
+    // Sección de métricas generales
+    agregarSeccionMetricas(document, metricas);
+    
+    // Sección de ventas por mes
+    agregarSeccionVentasPorMes(document, ventasPorMes);
+    
+    // Sección de ventas por categoría
+    agregarSeccionVentasPorCategoria(document, ventasPorCategoria);
+    
+    document.close();
+    return outputStream.toByteArray();
+}
+
+private byte[] generarPdfResumenCategorias(List<Map<String, Object>> resumenCategorias) throws DocumentException, IOException {
+    
+    Document document = new Document(PageSize.A4.rotate()); // Horizontal para más espacio
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PdfWriter.getInstance(document, outputStream);
+    
+    document.open();
+    
+    // Título
+    com.itextpdf.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
+    Paragraph title = new Paragraph("RESUMEN POR CATEGORÍAS", titleFont);
+    title.setAlignment(Element.ALIGN_CENTER);
+    title.setSpacingAfter(20);
+    document.add(title);
+    
+    // Fecha
+    com.itextpdf.text.Font dateFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.GRAY);
+    String fechaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+    Paragraph dateParagraph = new Paragraph("Generado el: " + fechaActual, dateFont);
+    dateParagraph.setAlignment(Element.ALIGN_RIGHT);
+    dateParagraph.setSpacingAfter(20);
+    document.add(dateParagraph);
+    
+    // Tabla
+    PdfPTable table = new PdfPTable(6); // 6 columnas
+    table.setWidthPercentage(100);
+    table.setSpacingBefore(10f);
+    table.setSpacingAfter(10f);
+    
+    // Configurar anchos de columnas
+    float[] columnWidths = {2f, 1.5f, 1.5f, 1.8f, 1.5f, 1.5f};
+    table.setWidths(columnWidths);
+    
+    // Encabezados
+    com.itextpdf.text.Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
+    String[] headers = {"Categoría", "Productos", "Cantidad Vendida", "Ingresos", "Precio Promedio", "Ventas"};
+    
+    for (String header : headers) {
+        PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+        cell.setBackgroundColor(BaseColor.DARK_GRAY);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setPadding(8);
+        table.addCell(cell);
+    }
+    
+    // Datos
+    com.itextpdf.text.Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 9, BaseColor.BLACK);
+    for (Map<String, Object> categoria : resumenCategorias) {
+        table.addCell(new PdfPCell(new Phrase((String) categoria.get("categoria"), dataFont)));
+        table.addCell(new PdfPCell(new Phrase(categoria.get("productos_totales").toString(), dataFont)));
+        table.addCell(new PdfPCell(new Phrase(categoria.get("cantidad_vendida").toString(), dataFont)));
+        table.addCell(new PdfPCell(new Phrase("S/. " + categoria.get("ingresos_totales").toString(), dataFont)));
+        table.addCell(new PdfPCell(new Phrase("S/. " + String.format("%.2f", ((Number) categoria.get("precio_promedio")).doubleValue()), dataFont)));
+        table.addCell(new PdfPCell(new Phrase(categoria.get("numero_ventas").toString(), dataFont)));
+    }
+    
+    document.add(table);
+    
+    document.close();
+    return outputStream.toByteArray();
+}
+
+private void agregarSeccionMetricas(Document document, Map<String, Object> metricas) throws DocumentException {
+    // Título de sección
+    com.itextpdf.text.Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, BaseColor.BLACK);
+    Paragraph sectionTitle = new Paragraph("MÉTRICAS GENERALES", sectionFont);
+    sectionTitle.setSpacingBefore(20);
+    sectionTitle.setSpacingAfter(10);
+    document.add(sectionTitle);
+    
+    // Tabla de métricas
+    PdfPTable table = new PdfPTable(2);
+    table.setWidthPercentage(60);
+    table.setSpacingAfter(20);
+    
+    // Datos
+    com.itextpdf.text.Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.BLACK);
+    com.itextpdf.text.Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
+    
+    String[] labels = {"Ingresos Totales:", "Cambio en Ingresos (%):", "Pedidos Completados:", "Nuevos Clientes:", "Productos Vendidos:"};
+    String[] keys = {"ingresosTotales", "cambioIngresos", "pedidosCompletados", "nuevosClientes", "productosVendidos"};
+    
+    for (int i = 0; i < labels.length; i++) {
+        table.addCell(new PdfPCell(new Phrase(labels[i], labelFont)));
+        Object value = metricas.get(keys[i]);
+        String valueStr = value != null ? value.toString() : "0";
+        if (keys[i].equals("ingresosTotales")) {
+            valueStr = "S/. " + valueStr;
+        } else if (keys[i].equals("cambioIngresos")) {
+            valueStr = String.format("%.2f%%", ((Number) value).doubleValue());
+        }
+        table.addCell(new PdfPCell(new Phrase(valueStr, valueFont)));
+    }
+    
+    document.add(table);
+}
+
+private void agregarSeccionVentasPorMes(Document document, List<Map<String, Object>> ventasPorMes) throws DocumentException {
+    // Título de sección
+    com.itextpdf.text.Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, BaseColor.BLACK);
+    Paragraph sectionTitle = new Paragraph("VENTAS POR MES", sectionFont);
+    sectionTitle.setSpacingBefore(20);
+    sectionTitle.setSpacingAfter(10);
+    document.add(sectionTitle);
+    
+    // Tabla
+    PdfPTable table = new PdfPTable(2);
+    table.setWidthPercentage(50);
+    table.setSpacingAfter(20);
+    
+    // Encabezados
+    com.itextpdf.text.Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
+    PdfPCell headerMes = new PdfPCell(new Phrase("Mes", headerFont));
+    headerMes.setBackgroundColor(BaseColor.GRAY);
+    headerMes.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(headerMes);
+    
+    PdfPCell headerVentas = new PdfPCell(new Phrase("Ventas", headerFont));
+    headerVentas.setBackgroundColor(BaseColor.GRAY);
+    headerVentas.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(headerVentas);
+    
+    // Datos
+    com.itextpdf.text.Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 9, BaseColor.BLACK);
+    for (Map<String, Object> venta : ventasPorMes) {
+        table.addCell(new PdfPCell(new Phrase((String) venta.get("mes"), dataFont)));
+        table.addCell(new PdfPCell(new Phrase("S/. " + venta.get("ventas").toString(), dataFont)));
+    }
+    
+    document.add(table);
+}
+
+private void agregarSeccionVentasPorCategoria(Document document, List<Map<String, Object>> ventasPorCategoria) throws DocumentException {
+    // Título de sección
+    com.itextpdf.text.Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, BaseColor.BLACK);
+    Paragraph sectionTitle = new Paragraph("VENTAS POR CATEGORÍA", sectionFont);
+    sectionTitle.setSpacingBefore(20);
+    sectionTitle.setSpacingAfter(10);
+    document.add(sectionTitle);
+    
+    // Tabla
+    PdfPTable table = new PdfPTable(2);
+    table.setWidthPercentage(50);
+    table.setSpacingAfter(20);
+    
+    // Encabezados
+    com.itextpdf.text.Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
+    PdfPCell headerCategoria = new PdfPCell(new Phrase("Categoría", headerFont));
+    headerCategoria.setBackgroundColor(BaseColor.GRAY);
+    headerCategoria.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(headerCategoria);
+    
+    PdfPCell headerValor = new PdfPCell(new Phrase("Valor", headerFont));
+    headerValor.setBackgroundColor(BaseColor.GRAY);
+    headerValor.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(headerValor);
+    
+    // Datos
+    com.itextpdf.text.Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 9, BaseColor.BLACK);
+    for (Map<String, Object> categoria : ventasPorCategoria) {
+        table.addCell(new PdfPCell(new Phrase((String) categoria.get("name"), dataFont)));
+        table.addCell(new PdfPCell(new Phrase("S/. " + categoria.get("value").toString(), dataFont)));
+    }
+    
+    document.add(table);
+}
 }

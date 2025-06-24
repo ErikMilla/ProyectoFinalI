@@ -293,6 +293,25 @@ function Productos() {
           Agregar Nuevo Producto
         </button>
       )}
+          
+      {userRole === 'admin' && (
+        <div style={{ marginBottom: '20px' }}>    
+          {/* NUEVOS BOTONES PARA REPORTES */}
+          <button 
+            onClick={() => descargarReporte('excel')}
+            style={{ marginLeft: '10px', backgroundColor: '#28a745', color: 'white' }}
+          >
+            📊 Descargar Excel
+          </button>
+          
+          <button 
+            onClick={() => descargarReporte('pdf')}
+            style={{ marginLeft: '10px', backgroundColor: '#dc3545', color: 'white' }}
+          >
+            📄 Descargar PDF
+          </button>
+        </div>
+)}
       
       <h3>Lista de Productos</h3>
       
@@ -451,6 +470,35 @@ function Productos() {
     </form>
   );
 
+  // Función para descargar reportes
+const descargarReporte = async (formato) => {
+  try {
+    const response = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos/export/${formato}`);
+    
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      
+      const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+      a.download = `productos_${fecha}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
+      
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      setMensaje(`Reporte ${formato.toUpperCase()} descargado exitosamente!`);
+    } else {
+      setMensaje(`Error al descargar el reporte ${formato.toUpperCase()}`);
+    }
+  } catch (error) {
+    console.error('Error al descargar reporte:', error);
+    setMensaje('Error de conexión al descargar reporte');
+  }
+};
   // ===============================
   // RENDER PRINCIPAL
   // ===============================

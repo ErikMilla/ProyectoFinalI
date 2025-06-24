@@ -186,6 +186,52 @@ const Dashboard = () => {
     return new Date().toLocaleDateString('es-PE', options);
   };
 
+
+  // Funciones para exportar reportes
+const exportarExcel = async () => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/dashboard/export/categorias/excel`);
+    if (!response.ok) throw new Error('Error al exportar a Excel');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `resumen_categorias_${new Date().toISOString().split('T')[0]}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error('Error al exportar Excel:', error);
+    alert('Error al exportar el archivo Excel');
+  }
+};
+
+const exportarPdf = async () => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/dashboard/export/categorias/pdf`);
+    if (!response.ok) throw new Error('Error al exportar a PDF');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `resumen_categorias_${new Date().toISOString().split('T')[0]}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error('Error al exportar PDF:', error);
+    alert('Error al exportar el archivo PDF');
+  }
+};
+
+
+
   if (loading) {
     return (
       <div className="dashboard-main">
@@ -459,9 +505,14 @@ const Dashboard = () => {
           <div className="table-container">
             <div className="table-header">
               <h3>Métricas detalladas por categoría</h3>
-              <button className="export-btn">
-                📥 Exportar
-              </button>
+             <div className="export-buttons">
+            <button className="export-btn" onClick={exportarExcel}>
+              📊 Excel
+            </button>
+            <button className="export-btn" onClick={exportarPdf}>
+              📄 PDF
+            </button>
+          </div>
             </div>
             <div className="table-wrapper">
               <table className="data-table">

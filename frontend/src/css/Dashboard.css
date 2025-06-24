@@ -1034,7 +1034,25 @@ body {
     font-size: 0.8rem;
   }
 }
+.export-buttons {
+  display: flex;
+  gap: 10px;
+}
 
+.export-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0694a2;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.export-btn:hover {
+  background-color: #057a86;
+}
 /* Nuevos colores para el segundo gráfico circular */
 .chart-card:nth-child(2) .recharts-pie-sector {
   filter: brightness(1.1);
