@@ -16,13 +16,18 @@ public class VentaServicio {
     private DetalleVentaRepositorio detalleVentaRepositorio;
 
     public Venta obtenerCarritoActivo(int idUsuario) {
-        return ventaRepositorio.findByIdUsuarioAndTotalIsNull(idUsuario);
+        return ventaRepositorio.findByIdUsuarioAndTotalIsNullAndEstado(idUsuario, "PENDIENTE");
     }
 
     public Venta crearCarrito(int idUsuario) {
+        Venta existente = obtenerCarritoActivo(idUsuario);
+        if (existente != null) {
+            return existente;
+        }
         Venta venta = new Venta();
         venta.setIdUsuario(idUsuario);
-        venta.setTotal(null); // Carrito activo
+        venta.setEstado("PENDIENTE");
+        venta.setTotal(null);
         return ventaRepositorio.save(venta);
     }
 
@@ -61,5 +66,9 @@ public class VentaServicio {
 
     public Venta finalizarVenta(Venta venta) {
         return ventaRepositorio.save(venta);
+    }
+
+    public void vaciarCarrito(int idVenta) {
+        detalleVentaRepositorio.deleteByVenta_IdVenta(idVenta);
     }
 } 

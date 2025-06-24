@@ -46,9 +46,9 @@ const LoginForm = () => {
         }
         if (data.id) {
           localStorage.setItem('idUsuario', data.id);
+          // Limpia cualquier posible carrito anterior
+          window.dispatchEvent(new Event('storage'));
         }
-        // Disparar evento para forzar re-render en Layout
-        window.dispatchEvent(new Event('storage'));
         // Si el backend devuelve el rol, redirige según el rol
         console.log('ROL:', data.rol);
         if (data.rol === 'admin') {

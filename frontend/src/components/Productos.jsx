@@ -36,7 +36,7 @@ function Productos() {
 
   // Navegación y Contexto del Carrito
   const navigate = useNavigate();
-  const { fetchCarrito } = useCarrito();
+  const { fetchCarrito, carrito } = useCarrito();
 
   // ===============================
   // EFECTOS
@@ -140,64 +140,20 @@ function Productos() {
 
   const agregarAlCarrito = async (producto) => {
     const idUsuario = localStorage.getItem('idUsuario');
-    if (!idUsuario) {
-      navigate('/login');
-      return;
-    }
+    await fetchCarrito(idUsuario); // Siempre asegura el carrito activo
 
-    try {
-      let carritoActivo = null;
-      const responseCarrito = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/activo/${idUsuario}`);
-
-      if (responseCarrito.ok) {
-        carritoActivo = await responseCarrito.json();
-      } else if (responseCarrito.status === 404) {
-        const responseCrear = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ idUsuario: parseInt(idUsuario) }),
-        });
-        if (responseCrear.ok) {
-          carritoActivo = await responseCrear.json();
-        } else {
-          console.error('Error al crear carrito:', responseCrear.statusText);
-          setMensaje('Error al agregar producto al carrito.');
-          return;
-        }
-      } else {
-        console.error('Error al obtener carrito activo:', responseCarrito.statusText);
-        setMensaje('Error al agregar producto al carrito.');
-        return;
-      }
-
-      const detalle = {
-        idVenta: carritoActivo.idVenta,
+    // Ahora usa carrito.idVenta para agregar el producto
+    await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/detalle`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idVenta: carrito.idVenta,
         id_producto: producto.id_producto,
         cantidad: 1
-      };
+      })
+    });
 
-      const responseDetalle = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/detalle`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(detalle),
-      });
-
-      if (responseDetalle.ok) {
-        setMensaje('Producto agregado al carrito!');
-        fetchCarrito(parseInt(idUsuario));
-      } else {
-        console.error('Error al agregar detalle:', responseDetalle.statusText);
-        setMensaje('Error al agregar producto al carrito.');
-      }
-
-    } catch (error) {
-      console.error('Error de red al agregar al carrito:', error);
-      setMensaje('Error de conexión al agregar producto.');
-    }
+    await fetchCarrito(idUsuario); // Refresca el carrito
   };
 
   // ===============================

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/carrito")
@@ -51,21 +52,19 @@ public class CarritoController {
 
     // Endpoint para obtener el carrito activo
     @GetMapping("/activo/{idUsuario}")
-    public Venta obtenerCarritoActivo(@PathVariable int idUsuario) {
+    public ResponseEntity<?> obtenerCarritoActivo(@PathVariable int idUsuario) {
         Venta carrito = ventaServicio.obtenerCarritoActivo(idUsuario);
         if (carrito == null) {
-            // Devolver 404 si no hay carrito activo
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active cart found for this user.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active cart found for this user.");
         }
-        return carrito;
+        return ResponseEntity.ok(carrito);
     }
 
     // Endpoint para crear un nuevo carrito (usado cuando no hay uno activo)
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Opcional: para devolver 201 Created
-    public Venta crearCarrito(@RequestBody Venta venta) {
-        // La venta recibida solo debería tener el idUsuario
-        return ventaServicio.crearCarrito(venta.getIdUsuario());
+    public Venta crearCarrito(@RequestBody Map<String, Integer> body) {
+        int idUsuario = body.get("idUsuario");
+        return ventaServicio.crearCarrito(idUsuario);
     }
 
     // Endpoint para agregar un detalle a un carrito existente
@@ -123,5 +122,12 @@ public class CarritoController {
     @GetMapping("/detalles/{idVenta}")
     public List<DetalleVenta> obtenerDetalles(@PathVariable int idVenta) {
         return ventaServicio.obtenerDetallesPorVenta(idVenta);
+    }
+
+    // Vaciar carrito (eliminar todos los productos del carrito)
+    @DeleteMapping("/{idVenta}/vaciar")
+    public ResponseEntity<?> vaciarCarrito(@PathVariable int idVenta) {
+        ventaServicio.vaciarCarrito(idVenta);
+        return ResponseEntity.ok().build();
     }
 } 

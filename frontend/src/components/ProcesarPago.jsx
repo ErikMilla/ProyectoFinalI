@@ -209,92 +209,91 @@ const ProcesarPago = () => {
   const finalizarCompra = async (metodoPago, datosPago) => {
     try {
       const idUsuario = localStorage.getItem('idUsuario');
-      
-      // Preparar datos para crear la venta
-      const ventaData = {
-        idUsuario: parseInt(idUsuario),
-        total: datosFormulario.total,
-        datosCliente: {
-          nombre: datosFormulario.nombre,
-          apellidos: datosFormulario.apellidos,
-          email: datosFormulario.email,
-          telefono: datosFormulario.telefono,
-          documento: datosFormulario.documento,
-          tipoDocumento: datosFormulario.tipoDocumento
-        },
-        direccionEnvio: {
-          direccion: datosFormulario.direccion,
-          distrito: datosFormulario.distrito,
-          provincia: datosFormulario.provincia,
-          departamento: datosFormulario.departamento,
-          codigoPostal: datosFormulario.codigoPostal,
-          referencia: datosFormulario.referencia
-        },
-        comprobante: {
-          tipo: datosFormulario.tipoComprobante,
-          razonSocial: datosFormulario.razonSocial,
-          ruc: datosFormulario.ruc,
-          direccionFiscal: datosFormulario.direccionFiscal
-        },
-        metodoPago: metodoPago,
-        datosPago: datosPago,
-        productos: datosFormulario.productos,
-        costos: {
-          subtotal: datosFormulario.subtotal,
-          impuestos: datosFormulario.impuestos,
-          envio: datosFormulario.envio
-        }
-      };
-
-      // Crear la venta en el backend
-      const response = await fetch('http://localhost:8081/api/ventas/crear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(ventaData)
-      });
-
-      if (response.ok) {
-        const ventaCreada = await response.json();
-        setVentaCreada(ventaCreada);
-        setPagoCompletado(true);
-        
-        // Limpiar carrito
-        await limpiarCarrito();
-        
-        // Limpiar datos del formulario
-        localStorage.removeItem('datosFormularioPago');
-        
-        // Enviar email con comprobante (se maneja en el backend)
-        await enviarComprobante(ventaCreada.idVenta);
-        
-      } else {
-        throw new Error('Error al crear la venta');
-      }
-      
-    } catch (error) {
-      console.error('Error al finalizar compra:', error);
-      throw error;
-    }
-  };
-
-  // Enviar comprobante por email
-  const enviarComprobante = async (idVenta) => {
-    try {
-      await fetch(`http://localhost:8081/api/ventas/${idVenta}/enviar-comprobante`, {
+      // 1. Crear la venta
+      const response = await fetch('http://localhost:8081/api/ventas/crear-desde-carrito', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: datosFormulario.email,
-          tipoComprobante: datosFormulario.tipoComprobante
+          idUsuario: parseInt(idUsuario),
+          productos: datosFormulario.productos.map(p => ({
+            id_producto: p.id_producto,
+            cantidad: p.cantidad
+          })),
+          tipoComprobante: datosFormulario.tipoComprobante || 'boleta'
         })
       });
+
+      if (response.ok) {
+        const ventaCreada = await response.json();
+        // 2. Procesar el pago
+        const pagoBody = {
+          metodoPago: metodoPago,
+          datosCliente: {
+            nombre: datosFormulario.nombre,
+            apellidos: datosFormulario.apellidos,
+            email: datosFormulario.email,
+            telefono: datosFormulario.telefono,
+            documento: datosFormulario.documento,
+            tipoDocumento: datosFormulario.tipoDocumento,
+            razonSocial: datosFormulario.razonSocial,
+            ruc: datosFormulario.ruc,
+            direccionFiscal: datosFormulario.direccionFiscal
+          },
+          datosEnvio: {
+            direccion: datosFormulario.direccion,
+            distrito: datosFormulario.distrito,
+            provincia: datosFormulario.provincia,
+            departamento: datosFormulario.departamento,
+            codigoPostal: datosFormulario.codigoPostal,
+            referencia: datosFormulario.referencia
+          },
+          ...(metodoPago === 'tarjeta' && {
+            datosTarjeta: {
+              numeroTarjeta: datosTarjeta.numeroTarjeta,
+              nombreTarjeta: datosTarjeta.nombreTarjeta,
+              fechaVencimiento: datosTarjeta.fechaVencimiento,
+              cvv: datosTarjeta.cvv,
+              tipoTarjeta: datosTarjeta.tipoTarjeta
+            }
+          }),
+          ...(metodoPago === 'yape' && {
+            datosYape: {
+              numeroTelefono: numeroYapePlin
+            }
+          }),
+          ...(metodoPago === 'plin' && {
+            datosPlin: {
+              numeroTelefono: numeroYapePlin
+            }
+          })
+        };
+        const pagoResponse = await fetch(`http://localhost:8081/api/ventas/${ventaCreada.idVenta}/procesar-pago`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(pagoBody)
+        });
+
+        if (pagoResponse.ok) {
+          const pagoResult = await pagoResponse.json();
+          setVentaCreada(pagoResult.venta);
+          setPagoCompletado(true);
+          // Limpiar carrito
+          await limpiarCarrito();
+          // Limpiar datos del formulario
+          localStorage.removeItem('datosFormularioPago');
+        } else {
+          throw new Error('Error al procesar el pago');
+        }
+      } else {
+        throw new Error('Error al crear la venta');
+      }
     } catch (error) {
-      console.error('Error al enviar comprobante:', error);
-      // No detener el flujo si falla el envío del email
+      console.error('Error al finalizar compra:', error);
+      throw error;
     }
   };
 
