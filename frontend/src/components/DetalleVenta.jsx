@@ -19,13 +19,8 @@ const DetalleVenta = () => {
     const [loading, setLoading] = useState(true);
     const [ventaExistente, setVentaExistente] = useState(null);
 
-<<<<<<< HEAD
-    // Calcular costos para carrito nuevo
-    const subtotal = total || 0;
-=======
     // Calcular costos
-    const subtotal = detalles.reduce((sum, item) => sum + ((item.producto?.precio || 0) * item.cantidad), 0);
->>>>>>> origin/rama-ronald
+    const subtotal = total || 0;
     const impuestos = subtotal * 0.18;
     const envio = subtotal > 100 ? 0 : 15.00;
     const totalConImpuestos = subtotal + impuestos + envio;
@@ -209,195 +204,82 @@ const DetalleVenta = () => {
         );
     }
 
-    // Si es una venta existente
-    if (ventaExistente) {
-<<<<<<< HEAD
-        // Calcular totales para venta existente
-        const subtotalVenta = calcularTotalVentaExistente(ventaExistente.detalles);
-        const impuestosVenta = subtotalVenta * 0.18;
-        const envioVenta = subtotalVenta > 100 ? 0 : 15.00;
-        const totalFinalVenta = subtotalVenta + impuestosVenta + envioVenta;
-=======
-        // Calcular totales usando el precio correcto
-        const getPrecioUnitario = (detalle) =>
-            detalle.precioUnitario || detalle.producto?.precio || detalle.precio || 0;
-
-        const subtotal = ventaExistente.detalles.reduce(
-            (sum, item) => sum + (getPrecioUnitario(item) * item.cantidad), 0
-        );
-        const impuestos = subtotal * 0.18;
-        const envio = subtotal > 100 ? 0 : 15.00;
-        const totalConImpuestos = subtotal + impuestos + envio;
->>>>>>> origin/rama-ronald
-
-        return (
-            <div className="detalle-venta-container">
-                <div className="detalle-venta-card">
-                    <div className="detalle-header">
-                        <h1>Detalle de Venta #{ventaExistente.idVenta}</h1>
-                        <div className="fecha-venta">
-                            {new Date(ventaExistente.fecha).toLocaleDateString('es-PE')}
-                        </div>
-                        {/* Mostrar estado de la venta */}
-                        <div className={`estado-venta ${ventaExistente.estado.toLowerCase()}`}>
-                            Estado: {ventaExistente.estado}
-                        </div>
-                    </div>
-<<<<<<< HEAD
-                    
-                    <div className="productos-section">
-                        <h2>{ventaExistente.estado === 'PENDIENTE' ? 'Productos en tu carrito' : 'Productos Comprados'}</h2>
-                        <div className="productos-lista">
-                            {ventaExistente.detalles && ventaExistente.detalles.map((detalle) => (
-                                <div key={detalle.id_detalle} className={`producto-item ${ventaExistente.estado === 'PENDIENTE' ? 'editable' : ''}`}>
-                                    <div className="producto-imagen">
-                                        <img 
-                                            src={detalle.producto?.imagen || '/images/default-product.jpg'} 
-                                            alt={detalle.producto?.nombre || 'Producto'}
-=======
-                    <div className="productos-section">
-                        <h2>Productos Comprados</h2>
-                        <div className="productos-lista">
-                            {ventaExistente.detalles.map((detalle) => (
-                                <div key={detalle.id_detalle} className="producto-item">
-                                    <div className="producto-imagen">
-                                        <img 
-                                            src={detalle.producto?.imagen || '/images/default-product.jpg'} 
-                                            alt={detalle.producto?.nombre}
->>>>>>> origin/rama-ronald
-                                            onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
-                                        />
-                                    </div>
-                                    <div className="producto-info">
-<<<<<<< HEAD
-                                        <h3>{detalle.producto?.nombre || 'Producto'}</h3>
-                                        <p>{detalle.producto?.descripcion || 'Sin descripción'}</p>
-                                        <div className="producto-detalles">
-                                            <span className="precio-unitario">
-                                                {formatPrice(detalle.producto?.precio || 0)} {ventaExistente.estado === 'PENDIENTE' ? 'por unidad' : 'c/u'}
-                                            </span>
-                                            {ventaExistente.estado !== 'PENDIENTE' && (
-                                                <span className="cantidad">
-                                                    Cantidad: {detalle.cantidad || 0}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Mostrar controles solo si la venta está PENDIENTE */}
-                                    {ventaExistente.estado === 'PENDIENTE' ? (
-                                        <div className="producto-controles">
-                                            <div className="cantidad-controles">
-                                                <button 
-                                                    onClick={() => handleEditarCantidadVenta(detalle.id_detalle, detalle.cantidad - 1, detalle.cantidad)}
-                                                    className="btn-cantidad"
-                                                    disabled={detalle.cantidad <= 1}
-                                                >
-                                                    -
-                                                </button>
-                                                <span className="cantidad-display">{detalle.cantidad}</span>
-                                                <button 
-                                                    onClick={() => handleEditarCantidadVenta(detalle.id_detalle, detalle.cantidad + 1, detalle.cantidad)}
-                                                    className="btn-cantidad"
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                            <button 
-                                                onClick={() => handleEliminarProductoVenta(detalle.id_detalle)}
-                                                className="btn-eliminar"
-                                                title="Eliminar producto"
-                                            >
-                                                🗑️
-                                            </button>
-                                        </div>
-                                    ) : null}
-                                    
-                                    <div className="producto-total">
-                                        {formatPrice((detalle.producto?.precio || 0) * (detalle.cantidad || 0))}
-=======
-                                        <h3>{detalle.producto?.nombre}</h3>
-                                        <p>{detalle.producto?.descripcion}</p>
-                                        <div className="producto-detalles">
-                                            <span className="precio-unitario">
-                                                {formatPrice(getPrecioUnitario(detalle))} c/u
-                                            </span>
-                                            <span className="cantidad">
-                                                Cantidad: {detalle.cantidad}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="producto-total">
-                                        {formatPrice(getPrecioUnitario(detalle) * detalle.cantidad)}
->>>>>>> origin/rama-ronald
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-<<<<<<< HEAD
-                    
-                    {/* Agregar desglose de costos para venta existente */}
-                    <div className="resumen-costos">
-                        <div className="costo-linea">
-                            <span>Subtotal:</span>
-                            <span>{formatPrice(subtotalVenta)}</span>
-                        </div>
-                        <div className="costo-linea">
-                            <span>IGV (18%):</span>
-                            <span>{formatPrice(impuestosVenta)}</span>
-                        </div>
-                        <div className="costo-linea">
-                            <span>Envío:</span>
-                            <span>{envioVenta > 0 ? formatPrice(envioVenta) : 'Gratis'}</span>
-                        </div>
-                        <div className="costo-linea total">
-                            <span>Total:</span>
-                            <span>{formatPrice(totalFinalVenta)}</span>
-                        </div>
-                    </div>
-                    
-                    {/* Agregar información de envío también para venta existente */}
-                    <div className="info-envio">
-                        <div className="info-card">
-                            <h3>🚚 Información de Envío</h3>
-                            <p>Tiempo estimado: 2-3 días hábiles</p>
-                            <p>Envío gratuito para compras mayores a S/ 100.00</p>
-                        </div>
-                    </div>
-                    
-=======
-                    <div className="resumen-total">
-                        <div className="total-final">
-                            <h3>Total: {formatPrice(totalConImpuestos)}</h3>
-                        </div>
-                    </div>
->>>>>>> origin/rama-ronald
-                    <div className="acciones">
-                        <button 
-                            onClick={() => navigate('/')} 
-                            className="btn-secondary"
-                        >
-                            Volver al Inicio
-                        </button>
-<<<<<<< HEAD
-                        
-=======
->>>>>>> origin/rama-ronald
-                        {/* Mostrar botón de continuar solo si la venta está pendiente */}
-                        {ventaExistente.estado === 'PENDIENTE' && (
-                            <button 
-                                onClick={() => navigate(`/formulario-pago?ventaId=${ventaExistente.idVenta}`)}
-                                className="btn-primary"
-                            >
-                                Continuar con el Pago
-                            </button>
-                        )}
-                    </div>
+// Si es una venta existente
+if (ventaExistente) {
+  return (
+    <div className="detalle-venta-container">
+      <div className="detalle-venta-card">
+        <div className="detalle-header">
+          <h1>Detalle de Venta #{ventaExistente.idVenta}</h1>
+          <div className="fecha-venta">
+            {new Date(ventaExistente.fecha).toLocaleDateString('es-PE')}
+          </div>
+          {/* Mostrar estado de la venta */}
+          <div className={`estado-venta ${ventaExistente.estado.toLowerCase()}`}>
+            Estado: {ventaExistente.estado}
+          </div>
+        </div>
+        
+        <div className="productos-section">
+          <h2>Productos Comprados</h2>
+          <div className="productos-lista">
+            {ventaExistente.detalles.map((detalle) => (
+              <div key={detalle.id_detalle} className="producto-item">
+                <div className="producto-imagen">
+                  <img 
+                    src={detalle.producto.imagen || '/images/default-product.jpg'} 
+                    alt={detalle.producto.nombre}
+                    onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
+                  />
                 </div>
-            </div>
-        );
-    }
+                <div className="producto-info">
+                  <h3>{detalle.producto.nombre}</h3>
+                  <p>{detalle.producto.descripcion}</p>
+                  <div className="producto-detalles">
+                    <span className="precio-unitario">
+                      {formatPrice(detalle.producto.precio)} c/u
+                    </span>
+                    <span className="cantidad">
+                      Cantidad: {detalle.cantidad}
+                    </span>
+                  </div>
+                </div>
+                <div className="producto-total">
+                  {formatPrice(detalle.producto.precio * detalle.cantidad)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="resumen-total">
+          <div className="total-final">
+            <h3>Total: {formatPrice(ventaExistente.total)}</h3>
+          </div>
+        </div>
+        
+        <div className="acciones">
+          <button 
+            onClick={() => navigate('/')} 
+            className="btn-secondary"
+          >
+            Volver al Inicio
+          </button>
+          
+          {/* Mostrar botón de continuar solo si la venta está pendiente */}
+          {ventaExistente.estado === 'PENDIENTE' && (
+            <button 
+              onClick={() => navigate(`/formulario-pago?ventaId=${ventaExistente.idVenta}`)}
+              className="btn-primary"
+            >
+              Continuar con el Pago
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
     // Nueva venta desde carrito
     return (

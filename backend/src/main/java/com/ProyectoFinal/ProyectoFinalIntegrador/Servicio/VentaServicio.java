@@ -19,14 +19,7 @@ public class VentaServicio {
     private DetalleVentaRepositorio detalleVentaRepositorio;
 
     public Venta obtenerCarritoActivo(int idUsuario) {
-<<<<<<< HEAD
-        Preconditions.checkArgument(idUsuario > 0, "El ID de usuario debe ser positivo");
-        return ventaRepositorio.findByIdUsuarioAndTotalIsNull(idUsuario);
-    }
 
-    public Venta crearCarrito(int idUsuario) {
-        Preconditions.checkArgument(idUsuario > 0, "El ID de usuario debe ser positivo");
-=======
         return ventaRepositorio.findByIdUsuarioAndTotalIsNullAndEstado(idUsuario, "PENDIENTE");
     }
 
@@ -35,7 +28,7 @@ public class VentaServicio {
         if (existente != null) {
             return existente;
         }
->>>>>>> origin/rama-ronald
+
         Venta venta = new Venta();
         venta.setIdUsuario(idUsuario);
         venta.setEstado("PENDIENTE");
