@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface VentaRepositorio extends JpaRepository<Venta, Integer> {
     List<Venta> findByIdUsuario(int idUsuario);
-    Venta findByIdUsuarioAndTotalIsNull(int idUsuario); // Carrito activo
+    Venta findByIdUsuarioAndTotalIsNull(int idUsuario); // Solo carritos activos (sin total)
+    Venta findByIdUsuarioAndTotalIsNullAndEstado(int idUsuario, String estado);
 } 

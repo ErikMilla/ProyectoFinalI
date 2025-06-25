@@ -19,8 +19,13 @@ const DetalleVenta = () => {
     const [loading, setLoading] = useState(true);
     const [ventaExistente, setVentaExistente] = useState(null);
 
+<<<<<<< HEAD
     // Calcular costos para carrito nuevo
     const subtotal = total || 0;
+=======
+    // Calcular costos
+    const subtotal = detalles.reduce((sum, item) => sum + ((item.producto?.precio || 0) * item.cantidad), 0);
+>>>>>>> origin/rama-ronald
     const impuestos = subtotal * 0.18;
     const envio = subtotal > 100 ? 0 : 15.00;
     const totalConImpuestos = subtotal + impuestos + envio;
@@ -206,11 +211,24 @@ const DetalleVenta = () => {
 
     // Si es una venta existente
     if (ventaExistente) {
+<<<<<<< HEAD
         // Calcular totales para venta existente
         const subtotalVenta = calcularTotalVentaExistente(ventaExistente.detalles);
         const impuestosVenta = subtotalVenta * 0.18;
         const envioVenta = subtotalVenta > 100 ? 0 : 15.00;
         const totalFinalVenta = subtotalVenta + impuestosVenta + envioVenta;
+=======
+        // Calcular totales usando el precio correcto
+        const getPrecioUnitario = (detalle) =>
+            detalle.precioUnitario || detalle.producto?.precio || detalle.precio || 0;
+
+        const subtotal = ventaExistente.detalles.reduce(
+            (sum, item) => sum + (getPrecioUnitario(item) * item.cantidad), 0
+        );
+        const impuestos = subtotal * 0.18;
+        const envio = subtotal > 100 ? 0 : 15.00;
+        const totalConImpuestos = subtotal + impuestos + envio;
+>>>>>>> origin/rama-ronald
 
         return (
             <div className="detalle-venta-container">
@@ -225,6 +243,7 @@ const DetalleVenta = () => {
                             Estado: {ventaExistente.estado}
                         </div>
                     </div>
+<<<<<<< HEAD
                     
                     <div className="productos-section">
                         <h2>{ventaExistente.estado === 'PENDIENTE' ? 'Productos en tu carrito' : 'Productos Comprados'}</h2>
@@ -235,10 +254,22 @@ const DetalleVenta = () => {
                                         <img 
                                             src={detalle.producto?.imagen || '/images/default-product.jpg'} 
                                             alt={detalle.producto?.nombre || 'Producto'}
+=======
+                    <div className="productos-section">
+                        <h2>Productos Comprados</h2>
+                        <div className="productos-lista">
+                            {ventaExistente.detalles.map((detalle) => (
+                                <div key={detalle.id_detalle} className="producto-item">
+                                    <div className="producto-imagen">
+                                        <img 
+                                            src={detalle.producto?.imagen || '/images/default-product.jpg'} 
+                                            alt={detalle.producto?.nombre}
+>>>>>>> origin/rama-ronald
                                             onError={(e) => { e.target.src = '/images/default-product.jpg'; }}
                                         />
                                     </div>
                                     <div className="producto-info">
+<<<<<<< HEAD
                                         <h3>{detalle.producto?.nombre || 'Producto'}</h3>
                                         <p>{detalle.producto?.descripcion || 'Sin descripción'}</p>
                                         <div className="producto-detalles">
@@ -284,11 +315,27 @@ const DetalleVenta = () => {
                                     
                                     <div className="producto-total">
                                         {formatPrice((detalle.producto?.precio || 0) * (detalle.cantidad || 0))}
+=======
+                                        <h3>{detalle.producto?.nombre}</h3>
+                                        <p>{detalle.producto?.descripcion}</p>
+                                        <div className="producto-detalles">
+                                            <span className="precio-unitario">
+                                                {formatPrice(getPrecioUnitario(detalle))} c/u
+                                            </span>
+                                            <span className="cantidad">
+                                                Cantidad: {detalle.cantidad}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="producto-total">
+                                        {formatPrice(getPrecioUnitario(detalle) * detalle.cantidad)}
+>>>>>>> origin/rama-ronald
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+<<<<<<< HEAD
                     
                     {/* Agregar desglose de costos para venta existente */}
                     <div className="resumen-costos">
@@ -319,6 +366,13 @@ const DetalleVenta = () => {
                         </div>
                     </div>
                     
+=======
+                    <div className="resumen-total">
+                        <div className="total-final">
+                            <h3>Total: {formatPrice(totalConImpuestos)}</h3>
+                        </div>
+                    </div>
+>>>>>>> origin/rama-ronald
                     <div className="acciones">
                         <button 
                             onClick={() => navigate('/')} 
@@ -326,7 +380,10 @@ const DetalleVenta = () => {
                         >
                             Volver al Inicio
                         </button>
+<<<<<<< HEAD
                         
+=======
+>>>>>>> origin/rama-ronald
                         {/* Mostrar botón de continuar solo si la venta está pendiente */}
                         {ventaExistente.estado === 'PENDIENTE' && (
                             <button 
@@ -371,7 +428,7 @@ const DetalleVenta = () => {
                                     <h3>{item.producto?.nombre || 'Producto'}</h3>
                                     <p>{item.producto?.descripcion || 'Sin descripción'}</p>
                                     <div className="precio-unitario">
-                                        {formatPrice(item.producto?.precio || 0)} por unidad
+                                        {formatPrice((item.producto?.precio || 0))} por unidad
                                     </div>
                                 </div>
                                 <div className="producto-controles">

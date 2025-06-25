@@ -28,7 +28,8 @@ const Layout = ({ children }) => {
     handleAumentarCantidad, // Estas funciones de manejo de cantidad/eliminación deberían estar en el contexto o pasarse desde App/index
     handleDisminuirCantidad,
     eliminarDetalle,
-    finalizarCompra
+    finalizarCompra,
+    limpiarCarrito
   } = useCarrito();
 
 
@@ -63,7 +64,10 @@ const Layout = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.clear();
+    limpiarCarrito();
     window.dispatchEvent(new Event('storage'));
+    // Si tienes acceso al contexto aquí, también puedes limpiar el carrito:
+    // limpiarCarrito();
     navigate('/');
   };
 

@@ -55,22 +55,35 @@ public class CarritoController {
 
     // Endpoint para obtener el carrito activo
     @GetMapping("/activo/{idUsuario}")
+<<<<<<< HEAD
     public Venta obtenerCarritoActivo(@PathVariable int idUsuario) {
         Preconditions.checkArgument(idUsuario > 0, "El ID de usuario debe ser positivo");
         Venta carrito = ventaServicio.obtenerCarritoActivo(idUsuario);
         if (carrito == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active cart found for this user.");
+=======
+    public ResponseEntity<?> obtenerCarritoActivo(@PathVariable int idUsuario) {
+        Venta carrito = ventaServicio.obtenerCarritoActivo(idUsuario);
+        if (carrito == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active cart found for this user.");
+>>>>>>> origin/rama-ronald
         }
-        return carrito;
+        return ResponseEntity.ok(carrito);
     }
 
     // Endpoint para crear un nuevo carrito
     @PostMapping
+<<<<<<< HEAD
     @ResponseStatus(HttpStatus.CREATED)
     public Venta crearCarrito(@RequestBody Venta venta) {
         Preconditions.checkNotNull(venta, "La venta no puede ser nula");
         Preconditions.checkArgument(venta.getIdUsuario() > 0, "El ID de usuario debe ser positivo");
         return ventaServicio.crearCarrito(venta.getIdUsuario());
+=======
+    public Venta crearCarrito(@RequestBody Map<String, Integer> body) {
+        int idUsuario = body.get("idUsuario");
+        return ventaServicio.crearCarrito(idUsuario);
+>>>>>>> origin/rama-ronald
     }
 
     // Endpoint para agregar un detalle a un carrito existente
@@ -137,5 +150,12 @@ public class CarritoController {
         Preconditions.checkArgument(idVenta > 0, "El ID de venta debe ser positivo");
         List<DetalleVenta> detalles = ventaServicio.obtenerDetallesPorVenta(idVenta);
         return ImmutableList.copyOf(detalles); // Retorna una lista inmutable
+    }
+
+    // Vaciar carrito (eliminar todos los productos del carrito)
+    @DeleteMapping("/{idVenta}/vaciar")
+    public ResponseEntity<?> vaciarCarrito(@PathVariable int idVenta) {
+        ventaServicio.vaciarCarrito(idVenta);
+        return ResponseEntity.ok().build();
     }
 } 

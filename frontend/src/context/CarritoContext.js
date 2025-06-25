@@ -23,33 +23,27 @@ export const CarritoProvider = ({ children }) => {
         setTotal(calculatedTotal);
     }, [detalles]); // Este efecto se ejecuta cada vez que 'detalles' cambia
 
-    const fetchCarrito = useCallback(async (userId) => {
-        if (!userId) return;
-        setLoadingCarrito(true);
-        try {
-            const response = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/activo/${userId}`);
-            if (response.ok) {
-                const data = await response.json();
-                setCarrito(data);
-                setDetalles(data.detalles || []);
-            } else if (response.status === 404) {
-                setCarrito(null);
-                setDetalles([]);
-                setTotal(0);
-            } else {
-                console.error('Error al obtener el carrito');
-                setCarrito(null);
-                setDetalles([]);
-                setTotal(0);
-            }
-        } catch (error) {
-            console.error('Error de red al obtener el carrito:', error);
-            setCarrito(null);
-            setDetalles([]);
-            setTotal(0);
-        } finally {
-            setLoadingCarrito(false);
+    // Función centralizada para obtener o crear el carrito activo
+    const obtenerOCrearCarritoActivo = async (userId) => {
+        let response = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/activo/${userId}`);
+        if (response.ok) return await response.json();
+        if (response.status === 404) {
+            let crear = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idUsuario: parseInt(userId) })
+            });
+            if (crear.ok) return await crear.json();
         }
+        return null;
+    };
+
+    // Siempre usa esto para cargar el carrito
+    const fetchCarrito = useCallback(async (userId) => {
+        const data = await obtenerOCrearCarritoActivo(userId);
+        setCarrito(data);
+        setDetalles(data?.detalles || []);
+        setTotal(data?.detalles?.reduce((sum, item) => sum + (item.producto?.precio || 0) * item.cantidad, 0) || 0);
     }, []);
 
     const toggleMiniCarrito = () => {
@@ -134,6 +128,13 @@ export const CarritoProvider = ({ children }) => {
         // Aquí podrías llamar a un endpoint del backend para finalizar la venta
     };
 
+    // Función para limpiar el carrito completamente y actualizar visualmente
+    const limpiarCarrito = () => {
+        setCarrito(null);
+        setDetalles([]);
+        setTotal(0);
+    };
+
     return (
         <CarritoContext.Provider value={{ 
             carrito, 
@@ -147,7 +148,8 @@ export const CarritoProvider = ({ children }) => {
             handleAumentarCantidad, // Exponer la función
             handleDisminuirCantidad, // Exponer la función
             eliminarDetalle, // Exponer la función
-            finalizarCompra // Exponer la función
+            finalizarCompra, // Exponer la función
+            limpiarCarrito // Exponer la función para limpiar el carrito
             }}>
             {children}
         </CarritoContext.Provider>

@@ -19,15 +19,27 @@ public class VentaServicio {
     private DetalleVentaRepositorio detalleVentaRepositorio;
 
     public Venta obtenerCarritoActivo(int idUsuario) {
+<<<<<<< HEAD
         Preconditions.checkArgument(idUsuario > 0, "El ID de usuario debe ser positivo");
         return ventaRepositorio.findByIdUsuarioAndTotalIsNull(idUsuario);
     }
 
     public Venta crearCarrito(int idUsuario) {
         Preconditions.checkArgument(idUsuario > 0, "El ID de usuario debe ser positivo");
+=======
+        return ventaRepositorio.findByIdUsuarioAndTotalIsNullAndEstado(idUsuario, "PENDIENTE");
+    }
+
+    public Venta crearCarrito(int idUsuario) {
+        Venta existente = obtenerCarritoActivo(idUsuario);
+        if (existente != null) {
+            return existente;
+        }
+>>>>>>> origin/rama-ronald
         Venta venta = new Venta();
         venta.setIdUsuario(idUsuario);
-        venta.setTotal(null); // Carrito activo
+        venta.setEstado("PENDIENTE");
+        venta.setTotal(null);
         return ventaRepositorio.save(venta);
     }
 
@@ -78,5 +90,9 @@ public class VentaServicio {
         Preconditions.checkNotNull(venta, "La venta no puede ser nula");
         Preconditions.checkArgument(venta.getIdUsuario() > 0, "El ID de usuario debe ser positivo");
         return ventaRepositorio.save(venta);
+    }
+
+    public void vaciarCarrito(int idVenta) {
+        detalleVentaRepositorio.deleteByVenta_IdVenta(idVenta);
     }
 } 

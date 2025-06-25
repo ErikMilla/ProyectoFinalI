@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -101,6 +102,7 @@ public class VentaController {
      * Crear una nueva venta desde el carrito
      */
     @PostMapping("/crear-desde-carrito")
+    @Transactional
     public ResponseEntity<?> crearVentaDesdeCarrito(@RequestBody Map<String, Object> request) {
         try {
             int idUsuario = (Integer) request.get("idUsuario");
@@ -174,6 +176,16 @@ public class VentaController {
             // Guardar venta
             Venta ventaGuardada = ventaRepositorio.save(nuevaVenta);
             
+            // ELIMINAR EL CARRITO ORIGINAL para evitar que persistan los productos
+            Venta carritoOriginal = ventaRepositorio.findByIdUsuarioAndTotalIsNullAndEstado(idUsuario, "PENDIENTE");
+            if (carritoOriginal != null && carritoOriginal.getIdVenta() != ventaGuardada.getIdVenta()) {
+                // Eliminar todos los detalles del carrito original
+                detalleVentaRepositorio.deleteByVenta_IdVenta(carritoOriginal.getIdVenta());
+                // Eliminar el carrito original
+                ventaRepositorio.delete(carritoOriginal);
+                logger.info("Carrito original eliminado - ID: {}", carritoOriginal.getIdVenta());
+            }
+            
             logger.info("Venta creada exitosamente - ID: {}, Total: {}", 
                 ventaGuardada.getIdVenta(), totalConImpuestos);
             
@@ -223,10 +235,9 @@ public class VentaController {
             boolean pagoExitoso = (Boolean) resultadoPago.get("exitoso");
             
             if (pagoExitoso) {
-                // Actualizar venta
                 venta.setEstado("PAGADA");
+                venta.setTotal(venta.getTotal());
                 venta.setMetodoPago(metodoPago);
-                venta.setTransaccionId((String) resultadoPago.get("transaccionId"));
                 venta.setFechaPago(LocalDateTime.now());
                 
                 // Actualizar datos del cliente y envío
@@ -241,6 +252,14 @@ public class VentaController {
                 
                 // Guardar venta actualizada
                 Venta ventaActualizada = ventaRepositorio.save(venta);
+                
+                // LIMPIEZA ADICIONAL: Eliminar cualquier carrito pendiente que pueda haber quedado
+                Venta carritoPendiente = ventaRepositorio.findByIdUsuarioAndTotalIsNullAndEstado(venta.getIdUsuario(), "PENDIENTE");
+                if (carritoPendiente != null && carritoPendiente.getIdVenta() != ventaActualizada.getIdVenta()) {
+                    detalleVentaRepositorio.deleteByVenta_IdVenta(carritoPendiente.getIdVenta());
+                    ventaRepositorio.delete(carritoPendiente);
+                    logger.info("Carrito pendiente eliminado tras pago - ID: {}", carritoPendiente.getIdVenta());
+                }
                 
                 // Generar y enviar comprobante por email
                 try {
