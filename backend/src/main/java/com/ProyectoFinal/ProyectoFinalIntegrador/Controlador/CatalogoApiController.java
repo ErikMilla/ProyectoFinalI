@@ -84,8 +84,8 @@ public class CatalogoApiController {
 
     @GetMapping("/subcategorias")
     public List<Subcategoria> getSubcategorias() {
-        return subcategoriaRespositorio.findAll();
-    }
+    return subcategoriaRespositorio.findAll();
+}
 
     @GetMapping("/subcategorias/categoria/{idCategoria}")
     public List<Subcategoria> getSubcategoriasByCategoria(@PathVariable int idCategoria) {
@@ -332,26 +332,86 @@ public class CatalogoApiController {
         return outputStream.toByteArray();
     }
         private String obtenerNombreCategoria(int idCategoria, List<Categoria> categorias) {
-            return categorias.stream()
-                    .filter(cat -> cat.getId_categoria() == idCategoria) // ✅ CORREGIDO
-                    .map(Categoria::getNombre)
-                    .findFirst()
-                    .orElse("Desconocida");
+        return categorias.stream()
+            .filter(cat -> cat.getId_categoria() == idCategoria)
+            .map(Categoria::getNombre)
+            .findFirst()
+            .orElse("Desconocida");
         }
 
         private String obtenerNombreSubcategoria(int idSubcategoria, List<Subcategoria> subcategorias) {
-            return subcategorias.stream()
-                    .filter(sub -> sub.getId_subcategoria() == idSubcategoria) // ✅ CORREGIDO
-                    .map(Subcategoria::getNombre)
-                    .findFirst()
-                    .orElse("Sin subcategoría");
+        return subcategorias.stream()
+            .filter(sub -> sub.getId_subcategoria() == idSubcategoria)
+            .map(Subcategoria::getNombre)
+            .findFirst()
+            .orElse("Sin subcategoría");
         }
 
         private String obtenerNombreMarca(int idMarca, List<Marca> marcas) {
-            return marcas.stream()
-                    .filter(marca -> marca.getId_marca() == idMarca) // ✅ CORREGIDO
-                    .map(Marca::getNombre)
-                    .findFirst()
-                    .orElse("Desconocida");
+        return marcas.stream()
+            .filter(marca -> marca.getId_marca() == idMarca)
+            .map(Marca::getNombre)
+            .findFirst()
+            .orElse("Desconocida");
         }
+       
+
+    @PutMapping("/productos/{id}")
+public ResponseEntity<Producto> editarProducto(
+        @PathVariable int id,
+        @RequestParam(value = "file", required = false) MultipartFile file,
+        @RequestParam("nombre") String nombre,
+        @RequestParam("precio") BigDecimal precio,
+        @RequestParam("stock") int stock,
+        @RequestParam("idCategoria") int idCategoria,
+        @RequestParam("idSubcategoria") int idSubcategoria,
+        @RequestParam("idMarca") int idMarca) {
+    
+    try {
+        Producto producto = productoRespositorio.findById(id).orElse(null);
+        if (producto == null) {
+            return ResponseEntity.notFound().build();
         }
+        
+        producto.setNombre(nombre);
+        producto.setPrecio(precio);
+        producto.setStock(stock);
+        producto.setIdCategoria(idCategoria);
+        producto.setIdSubcategoria(idSubcategoria);
+        producto.setIdMarca(idMarca);
+        
+        if (file != null && !file.isEmpty()) {
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath);
+            producto.setImagenUrl("/uploads/" + fileName);
+        }
+        
+        Producto productoActualizado = productoRespositorio.save(producto);
+        return ResponseEntity.ok(productoActualizado);
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+@DeleteMapping("/productos/{id}")
+public ResponseEntity<Void> eliminarProducto(@PathVariable int id) {
+    try {
+        if (productoRespositorio.existsById(id)) {
+            productoRespositorio.deleteById(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
+    }
+}    

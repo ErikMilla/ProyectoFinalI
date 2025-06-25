@@ -683,3 +683,44 @@ java.sql.SQLSyntaxErrorException: Unknown column 'v1_0.codigo_postal' in 'field 
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-06-24 23:40:54.377 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 6 but should be 1
+2025-06-24 23:40:54.397 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 6 but should be 1
+2025-06-24 23:40:54.430 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 6 but should be 1
+2025-06-24 23:40:57.500 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 108 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 112 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 116 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 120 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 166 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 170 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 174 but should be 1
+2025-06-24 23:40:57.516 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 166 but should be 1
+2025-06-24 23:40:57.526 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 108 but should be 1
+2025-06-24 23:40:57.526 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 112 but should be 1
+2025-06-24 23:40:57.526 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 116 but should be 1
+2025-06-24 23:40:57.527 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 120 but should be 1
+2025-06-24 23:40:57.527 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 166 but should be 1
+2025-06-24 23:40:57.527 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 170 but should be 1
+2025-06-24 23:40:57.527 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 174 but should be 1
+2025-06-24 23:40:57.527 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 166 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 108 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 112 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 116 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 120 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 166 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 170 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 174 but should be 1
+2025-06-24 23:40:57.538 [main] ERROR o.a.f.ttf.GlyphSubstitutionTable - The expected SubstFormat for ExtensionSubstFormat1 subtable is 166 but should be 1
+2025-06-25 00:54:57.439 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8081 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8081 or configure this application to listen on another port.
+

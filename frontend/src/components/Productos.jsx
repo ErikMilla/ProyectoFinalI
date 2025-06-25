@@ -31,6 +31,7 @@ function Productos() {
 
   // Estados de UI
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [editandoProducto, setEditandoProducto] = useState(null);
   const [mensaje, setMensaje] = useState('');
   const [userRole, setUserRole] = useState(localStorage.getItem('rol'));
 
@@ -64,14 +65,14 @@ function Productos() {
     if (categoriaId && Array.isArray(subcategorias) && subcategorias.length > 0) {
       let idParaFiltrar = parseInt(categoriaId);
 
-      // **MODIFICACIÓN INICIA AQUI**
-      // Intercambiar el criterio de filtrado para las categorías con IDs 1 y 2
-      if (idParaFiltrar === 1) { // Si la categoría seleccionada es la que se muestra como 'Pañalería' (ID original 1)
-        idParaFiltrar = 2; // Filtramos por las subcategorías con ID original 2 (que deberían ser 'Bebes' y 'Adultos')
-      } else if (idParaFiltrar === 2) { // Si la categoría seleccionada es la que se muestra como 'Higiene' (ID original 2)
-        idParaFiltrar = 1; // Filtramos por las subcategorías con ID original 1 (que deberían ser las de Higiene)
+      // MODIFICACIÓN INICIA AQUI
+      
+      if (idParaFiltrar === 1) { 
+        idParaFiltrar = 2; 
+      } else if (idParaFiltrar === 2) { 
+        idParaFiltrar = 1; 
       }
-      // **MODIFICACIÓN TERMINA AQUI**
+      // MODIFICACIÓN TERMINA AQUI
 
       const subcategoriasDeLaCategoria = subcategorias.filter(
         sub => sub.id_categoria === idParaFiltrar
@@ -100,7 +101,7 @@ function Productos() {
         if (cat.id_categoria === 2) return { ...cat, nombre: 'Higiene' };   // Si ID 2 es Pañalería en BD, mostrar como Higiene
         return cat; // Mantener otras categorías como están
       });
-      setCategorias(adjustedCategoriasData.map(cat => ({ id_categoria: cat.id_categoria, nombre: cat.nombre })));
+      setCategorias(adjustedCategoriasData);
 
       // Obtener subcategorías
       const subcategoriasResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/subcategorias`);
@@ -111,12 +112,7 @@ function Productos() {
       // Obtener marcas
       const marcasResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/marcas`);
       const marcasData = await marcasResponse.json();
-      setMarcas(marcasData.map(marca => ({ id_marca: marca.id_marca, nombre: marca.nombre })));
-
-      // Obtener productos
-      const productosResponse = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos`);
-      const productosData = await productosResponse.json();
-      setProductos(productosData);
+      setMarcas(marcasData);
 
     } catch (error) {
       console.error('Error al obtener datos iniciales:', error);
@@ -187,8 +183,14 @@ function Productos() {
     });
 
     try {
-      const response = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos`, {
-        method: 'POST',
+      const url = editandoProducto 
+        ? `http://localhost:${BACKEND_PORT}/api/catalogo/productos/${editandoProducto.id_producto}`
+        : `http://localhost:${BACKEND_PORT}/api/catalogo/productos`;
+      
+      const method = editandoProducto ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method: method,
         body: formData,
       });
 
@@ -196,15 +198,48 @@ function Productos() {
       console.log('Respuesta del servidor:', data);
 
       if (response.ok) {
-        setMensaje('Producto agregado con éxito!');
+        setMensaje(editandoProducto ? 'Producto actualizado con éxito!' : 'Producto agregado con éxito!');
         limpiarFormulario();
         fetchProductos();
       } else {
-        setMensaje(`Error al agregar producto: S/.{data.message || response.statusText}`);
+        setMensaje(`Error al ${editandoProducto ? 'actualizar' : 'agregar'} producto: ${data.message || response.statusText}`);
       }
     } catch (error) {
-      console.error('Error al agregar producto:', error);
-      setMensaje('Error de conexión al agregar producto.');
+      console.error('Error al procesar producto:', error);
+      setMensaje('Error de conexión al procesar producto.');
+    }
+  };
+
+  const editarProducto = (producto) => {
+    setEditandoProducto(producto);
+    setNombre(producto.nombre);
+    setPrecio(producto.precio.toString());
+    setStock(producto.stock.toString());
+    setCategoriaId(producto.idCategoria.toString());
+    setSubcategoriaId(producto.idSubcategoria.toString());
+    setMarcaId(producto.idMarca.toString());
+    setMostrarFormulario(true);
+  };
+
+  const eliminarProducto = async (id) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setMensaje('Producto eliminado con éxito!');
+        fetchProductos();
+      } else {
+        setMensaje('Error al eliminar producto.');
+      }
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+      setMensaje('Error de conexión al eliminar producto.');
     }
   };
 
@@ -221,6 +256,7 @@ function Productos() {
     setMarcaId('');
     setImagen(null);
     setMostrarFormulario(false);
+    setEditandoProducto(null);
   };
 
   const obtenerNombreSubcategoria = (idSubcategoria) => {
@@ -267,7 +303,7 @@ function Productos() {
             📄 Descargar PDF
           </button>
         </div>
-)}
+      )}
       
       <h3>Lista de Productos</h3>
       
@@ -277,10 +313,11 @@ function Productos() {
             <tr>
               <th>Nombre</th>
               <th>Precio</th>
+              <th>Stock</th>
               <th>Categoría</th>
               <th>Subcategoría</th>
               <th>Marca</th>
-              {userRole !== 'admin' && <th>Acciones</th>}
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -288,11 +325,27 @@ function Productos() {
               <tr key={producto.id_producto}>
                 <td>{producto.nombre}</td>
                 <td>S/.{producto.precio.toFixed(2)}</td>
-                <td>{obtenerNombreCategoria(producto.id_categoria)}</td>
-                <td>{obtenerNombreSubcategoria(producto.id_subcategoria)}</td>
-                <td>{obtenerNombreMarca(producto.id_marca)}</td>
-                {userRole !== 'admin' && (
-                  <td>
+                <td>{producto.stock}</td>
+                <td>{obtenerNombreCategoria(producto.idCategoria)}</td>
+                <td>{obtenerNombreSubcategoria(producto.idSubcategoria)}</td>
+                <td>{obtenerNombreMarca(producto.idMarca)}</td>
+                <td>
+                  {userRole === 'admin' ? (
+                    <>
+                      <button 
+                        onClick={() => editarProducto(producto)}
+                        style={{ marginRight: '5px', backgroundColor: '#007bff', color: 'white' }}
+                      >
+                        Editar
+                      </button>
+                      <button 
+                        onClick={() => eliminarProducto(producto.id_producto)}
+                        style={{ backgroundColor: '#dc3545', color: 'white' }}
+                      >
+                        Eliminar
+                      </button>
+                    </>
+                  ) : (
                     <button
                       className="btn-comprar"
                       onClick={() => {
@@ -305,14 +358,8 @@ function Productos() {
                     >
                       Comprar
                     </button>
-                  </td>
-                )}
-                {userRole === 'admin' && (
-                  <td>
-                    <button onClick={() => {/* Lógica para editar si existe */}} disabled>Editar</button>
-                    <button onClick={() => {/* Lógica para eliminar si existe */}} disabled>Eliminar</button>
-                  </td>
-                )}
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -325,7 +372,7 @@ function Productos() {
 
   const renderFormulario = () => (
     <form onSubmit={handleSubmit}>
-      <h2>Ingresar Nuevo Producto</h2>
+      <h2>{editandoProducto ? 'Editar Producto' : 'Ingresar Nuevo Producto'}</h2>
       
       <div>
         <label>Nombre:</label>
@@ -418,8 +465,10 @@ function Productos() {
       </div>
       
       <div>
-        <button type="submit">Agregar Producto</button>
-        <button type="button" onClick={() => setMostrarFormulario(false)}>
+        <button type="submit">
+          {editandoProducto ? 'Actualizar Producto' : 'Agregar Producto'}
+        </button>
+        <button type="button" onClick={() => limpiarFormulario()}>
           Cancelar
         </button>
       </div>
@@ -427,34 +476,35 @@ function Productos() {
   );
 
   // Función para descargar reportes
-const descargarReporte = async (formato) => {
-  try {
-    const response = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos/export/${formato}`);
-    
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
+  const descargarReporte = async (formato) => {
+    try {
+      const response = await fetch(`http://localhost:${BACKEND_PORT}/api/catalogo/productos/export/${formato}`);
       
-      const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-      a.download = `productos_${fecha}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
-      
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      setMensaje(`Reporte ${formato.toUpperCase()} descargado exitosamente!`);
-    } else {
-      setMensaje(`Error al descargar el reporte ${formato.toUpperCase()}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        
+        const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        a.download = `productos_${fecha}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
+        
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        setMensaje(`Reporte ${formato.toUpperCase()} descargado exitosamente!`);
+      } else {
+        setMensaje(`Error al descargar el reporte ${formato.toUpperCase()}`);
+      }
+    } catch (error) {
+      console.error('Error al descargar reporte:', error);
+      setMensaje('Error de conexión al descargar reporte');
     }
-  } catch (error) {
-    console.error('Error al descargar reporte:', error);
-    setMensaje('Error de conexión al descargar reporte');
-  }
-};
+  };
+
   // ===============================
   // RENDER PRINCIPAL
   // ===============================
