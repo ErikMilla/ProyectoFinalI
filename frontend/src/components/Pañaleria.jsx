@@ -16,7 +16,6 @@ import pañal6Img from "../imagenes/pañal5.jpg";
 const Carrusel = () => {
   // Usamos las imágenes locales para el carrusel
   const images = [bebeImg, bebe2Img, pañal1Img, pañal2Img, pañal4Img, pañal5Img, pañal6Img];
-
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -29,7 +28,7 @@ const Carrusel = () => {
   const goToSlide = index => setCurrent(index);
 
   return (
-    <div className="carrusel-container fade-in-carrusel"> {/* Asegúrate de tener las clases CSS para el carrusel */}
+    <div className="carrusel-container fade-in-carrusel">
       <div className="carrusel" style={{
         width: `${images.length * 100}%`,
         transform: `translateX(-${(100 / images.length) * current}%)`,
@@ -62,12 +61,8 @@ const Carrusel = () => {
 // Define el puerto de tu backend Java (por defecto 8081, cámbialo si lo modificaste)
 const BACKEND_PORT = 8081;
 // Define el ID de la categoría Pañalería (¡AJUSTA ESTE VALOR SI ES DIFERENTE EN TU BD!)
-const CATEGORIA_ID = 1; // ID para Pañalería (Corregido según el comportamiento de creación)
+const CATEGORIA_ID = 1; // ID para Pañalería
 
-// Eliminar o comentar productosBase ya que ahora se cargarán de la BD
-// const productosBase = [...];
-
-// Cambiar el nombre de la función a Pañaleria
 function Pañaleria() {
   const [productosPañaleria, setProductosPañaleria] = useState([]);
   const [filtroActivo, setFiltroActivo] = useState('Todos');
@@ -76,9 +71,8 @@ function Pañaleria() {
   const [userRole, setUserRole] = useState(localStorage.getItem('rol'));
   const [marcas, setMarcas] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
-
-  const filtros = ["Todos", "Bebé", "Adulto", "Higiene"]; // Mantener si filtras por subcategoría o tipo localmente
-
+  const [subcategoriasPañaleria, setSubcategoriasPañaleria] = useState([]);
+  
   const navigate = useNavigate();
   const { fetchCarrito } = useCarrito();
 
@@ -111,6 +105,14 @@ function Pañaleria() {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  // Filtrar subcategorías que pertenecen a la categoría Pañalería
+  useEffect(() => {
+    if (subcategorias.length > 0) {
+      const subcategoriasDePañaleria = subcategorias.filter(sub => sub.id_categoria === CATEGORIA_ID);
+      setSubcategoriasPañaleria(subcategoriasDePañaleria);
+    }
+  }, [subcategorias]);
 
   const fetchMarcas = async () => {
     try {
@@ -153,11 +155,12 @@ function Pañaleria() {
       navigate('/login');
       return;
     }
+
     try {
       // Primero, obtener el carrito activo del usuario o crear uno si no existe
       let carritoActivo = null;
       const responseCarrito = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/activo/${idUsuario}`);
-
+      
       if (responseCarrito.ok) {
         carritoActivo = await responseCarrito.json();
       } else if (responseCarrito.status === 404) {
@@ -169,6 +172,7 @@ function Pañaleria() {
           },
           body: JSON.stringify({ idUsuario: parseInt(idUsuario) }),
         });
+
         if (responseCrear.ok) {
           carritoActivo = await responseCrear.json();
         } else {
@@ -204,7 +208,6 @@ function Pañaleria() {
         console.error('Error al agregar detalle:', responseDetalle.statusText);
         setMensaje('Error al agregar producto al carrito.');
       }
-
     } catch (error) {
       console.error('Error de red al agregar al carrito:', error);
       setMensaje('Error de conexión al agregar producto.');
@@ -212,63 +215,75 @@ function Pañaleria() {
   };
 
   const productosFiltrados = productosPañaleria.filter((producto) => {
-    // Adapta la lógica de filtrado si las propiedades en tu entidad Producto.java son diferentes
-    const coincideCategoria =
-      filtroActivo === "Todos" || (producto.categoria && producto.categoria === filtroActivo); // Asumiendo que Producto.java tiene campo 'categoria'
+    // Filtrar por subcategoría
+    const coincideSubcategoria = filtroActivo === "Todos" || 
+      (producto.idSubcategoria && filtroActivo === producto.idSubcategoria.toString()) ||
+      (producto.id_subcategoria && filtroActivo === producto.id_subcategoria.toString());
+
+    // Filtrar por búsqueda
     const coincideBusqueda = busqueda.trim() === '' || (
-        (producto.nombre && producto.nombre.toLowerCase().includes(busqueda.toLowerCase()))
-        // Agrega otras propiedades por las que quieras buscar si existen en tu entidad
-        // || (producto.descripcion && producto.descripcion.toLowerCase().includes(busqueda.toLowerCase()))
+      (producto.nombre && producto.nombre.toLowerCase().includes(busqueda.toLowerCase()))
     );
-    return coincideCategoria && coincideBusqueda;
+
+    return coincideSubcategoria && coincideBusqueda;
   });
 
   return (
-
-    <div className="pañaleria-wrapper"> {/* Clase CSS quizás necesite ser pañaleria-wrapper */}
-      {/* Carrusel (descomentar para mostrar)*/}
+    <div className="pañaleria-wrapper">
+      {/* Carrusel */}
       <Carrusel />
-
+      
       <div className="barra-busqueda fade-in-down">
         <label htmlFor="busqueda">Buscar:</label>
         <input
           id="busqueda"
           type="text"
-          placeholder="Nombre o tipo..."
+          placeholder="Nombre..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
       </div>
-
+      
       <div className="higiene-wrapper fade-in-left">
-        {/* Filtro lateral (mantener si quieres filtrar por tipo)*/}
+        {/* Filtro lateral - Ahora usando subcategorías dinámicas */}
         <aside className="filtro-lateral">
-          <h3>Filtrar por tipo</h3>
-          {filtros.map((tipo) => (
+          <h3>Filtrar por subcategoría</h3>
+          
+          {/* Botón "Todos" */}
+          <button
+            className={`filtro-btn ${filtroActivo === 'Todos' ? 'activo' : ''}`}
+            onClick={() => setFiltroActivo('Todos')}
+          >
+            Todos
+          </button>
+
+          {/* Botones de subcategorías dinámicas */}
+          {subcategoriasPañaleria.map((subcategoria) => (
             <button
-              key={tipo}
-              className={`filtro-btn ${filtroActivo === tipo ? 'activo' : ''}`}
-              onClick={() => setFiltroActivo(tipo)}
+              key={subcategoria.id_subcategoria}
+              className={`filtro-btn ${filtroActivo === subcategoria.id_subcategoria.toString() ? 'activo' : ''}`}
+              onClick={() => setFiltroActivo(subcategoria.id_subcategoria.toString())}
             >
-              {tipo}
+              {subcategoria.nombre}
             </button>
           ))}
         </aside>
-
-      
 
         <div className="productos-grid">
           {productosFiltrados.length > 0 ? (
             productosFiltrados.map((producto) => (
               <div className="card-producto" key={producto.id_producto}>
-                <img src={`http://localhost:${BACKEND_PORT}${producto.imagenUrl}`} alt={producto.nombre} />
+                <img
+                  src={`http://localhost:${BACKEND_PORT}${producto.imagenUrl}`}
+                  alt={producto.nombre}
+                />
                 <div className="contenido">
                   <h4>{producto.nombre}</h4>
                   <p><strong>Marca:</strong> {obtenerNombreMarca(producto.idMarca)}</p>
                   <p><strong>Subcategoría:</strong> {obtenerNombreSubcategoria(producto.idSubcategoria)}</p>
                   <p><strong>Precio:</strong> S/ {producto.precio ? producto.precio.toFixed(2) : 'N/A'}</p>
-                  <button 
-                    className="btn-comprar" 
+                  <button
+                    className="btn-comprar"
                     onClick={() => {
                       if (!userRole) {
                         navigate('/login');
@@ -283,7 +298,7 @@ function Pañaleria() {
               </div>
             ))
           ) : (
-             <p>{mensaje || "No hay productos en esta categoría."}</p>
+            <p>{mensaje || "No hay productos en esta categoría."}</p>
           )}
         </div>
       </div>
@@ -291,5 +306,4 @@ function Pañaleria() {
   );
 }
 
-// Exportar la función con el nombre corregido
 export default Pañaleria;

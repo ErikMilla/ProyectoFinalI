@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import '../css/Higiene.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
-import imagen1 from "../imagenes/Higiene1.jpg"; 
+import imagen1 from "../imagenes/Higiene1.jpg";
 import imagen2 from "../imagenes/Higiene2.jpg";
 import imagen3 from "../imagenes/Higiene3.png";
 import imagen4 from "../imagenes/Higiene4.png";
-// Importaciones de imágenes locales eliminadas, ahora se cargarán desde el backend
 
 // Define el puerto de tu backend Java (por defecto 8081, cámbialo si lo modificaste)
 const BACKEND_PORT = 8081;
@@ -16,7 +15,6 @@ const CATEGORIA_ID = 2;
 const Carrusel = () => {
   // Usamos las imágenes locales para el carrusel (solo 4 imágenes)
   const images = [imagen1, imagen2, imagen3, imagen4];
-
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -59,11 +57,6 @@ const Carrusel = () => {
   );
 };
 
-// Datos de productos locales eliminados, ahora se cargarán de la BD
-const productos = [];
-
-const filtros = ['Todos', 'Shampoo', 'Pasta', 'Cepillo']; // Mantener si quieres filtrar por tipo en frontend
-
 const Higiene = () => {
   const [productosHigiene, setProductosHigiene] = useState([]);
   const [filtroActivo, setFiltroActivo] = useState('Todos');
@@ -72,7 +65,7 @@ const Higiene = () => {
   const [userRole, setUserRole] = useState(localStorage.getItem('rol'));
   const [marcas, setMarcas] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
-
+  const [subcategoriasHigiene, setSubcategoriasHigiene] = useState([]);
   const navigate = useNavigate();
   const { fetchCarrito } = useCarrito();
 
@@ -80,15 +73,22 @@ const Higiene = () => {
     obtenerProductosHigiene();
     fetchMarcas();
     fetchSubcategorias();
-
     const handleStorageChange = () => {
       setUserRole(localStorage.getItem('rol'));
     };
     window.addEventListener('storage', handleStorageChange);
-    return () => { // Cleanup
+    return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  // Filtrar subcategorías que pertenecen a la categoría Higiene
+  useEffect(() => {
+    if (subcategorias.length > 0) {
+      const subcategoriasDeHigiene = subcategorias.filter(sub => sub.id_categoria === CATEGORIA_ID);
+      setSubcategoriasHigiene(subcategoriasDeHigiene);
+    }
+  }, [subcategorias]);
 
   const fetchMarcas = async () => {
     try {
@@ -148,13 +148,17 @@ const Higiene = () => {
   };
 
   const productosFiltrados = productosHigiene.filter((producto) => {
-    // Asegúrate de que las propiedades del producto (nombre, tipo) coincidan con las de tu entidad Producto.java si filtras por ellas
-    const coincideTipo = filtroActivo === 'Todos' || (producto.tipo && producto.tipo.toLowerCase() === filtroActivo.toLowerCase());
+    // Filtrar por subcategoría
+    const coincideSubcategoria = filtroActivo === 'Todos' || 
+      (producto.idSubcategoria && filtroActivo === producto.idSubcategoria.toString()) ||
+      (producto.id_subcategoria && filtroActivo === producto.id_subcategoria.toString());
+
+    // Filtrar por búsqueda
     const coincideBusqueda = busqueda.trim() === '' || (
-      (producto.nombre && producto.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (producto.tipo && producto.tipo.toLowerCase().includes(busqueda.toLowerCase())) // Si tu entidad Producto tiene campo 'tipo'
+      (producto.nombre && producto.nombre.toLowerCase().includes(busqueda.toLowerCase()))
     );
-    return coincideTipo && coincideBusqueda;
+
+    return coincideSubcategoria && coincideBusqueda;
   });
 
   // Nueva función para agregar al carrito
@@ -169,7 +173,7 @@ const Higiene = () => {
       // Primero, obtener el carrito activo del usuario o crear uno si no existe
       let carritoActivo = null;
       const responseCarrito = await fetch(`http://localhost:${BACKEND_PORT}/api/carrito/activo/${idUsuario}`);
-
+      
       if (responseCarrito.ok) {
         carritoActivo = await responseCarrito.json();
       } else if (responseCarrito.status === 404) {
@@ -181,6 +185,7 @@ const Higiene = () => {
           },
           body: JSON.stringify({ idUsuario: parseInt(idUsuario) }),
         });
+
         if (responseCrear.ok) {
           carritoActivo = await responseCrear.json();
         } else {
@@ -216,7 +221,6 @@ const Higiene = () => {
         console.error('Error al agregar detalle:', responseDetalle.statusText);
         setMensaje('Error al agregar producto al carrito.');
       }
-
     } catch (error) {
       console.error('Error de red al agregar al carrito:', error);
       setMensaje('Error de conexión al agregar producto.');
@@ -226,7 +230,7 @@ const Higiene = () => {
   return (
     <div className="fade-in-up">
       {/* Carrusel */}
-      <Carrusel /> {/* Descomenta si tienes imágenes para el carrusel */}
+      <Carrusel />
 
       {/* Barra de búsqueda */}
       <div className="barra-busqueda fade-in-down">
@@ -234,23 +238,33 @@ const Higiene = () => {
         <input
           id="busqueda"
           type="text"
-          placeholder="Nombre o tipo..."
+          placeholder="Nombre..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
       </div>
 
       <div className="higiene-wrapper fade-in-left">
-        {/* Filtro lateral (mantener si quieres filtrar por tipo)*/}
+        {/* Filtro lateral - Ahora usando subcategorías dinámicas */}
         <aside className="filtro-lateral">
-          <h3>Filtrar por tipo</h3>
-          {filtros.map((tipo) => (
+          <h3>Filtrar por subcategoría</h3>
+          
+          {/* Botón "Todos" */}
+          <button
+            className={`filtro-btn ${filtroActivo === 'Todos' ? 'activo' : ''}`}
+            onClick={() => setFiltroActivo('Todos')}
+          >
+            Todos
+          </button>
+
+          {/* Botones de subcategorías dinámicas */}
+          {subcategoriasHigiene.map((subcategoria) => (
             <button
-              key={tipo}
-              className={`filtro-btn ${filtroActivo === tipo ? 'activo' : ''}`}
-              onClick={() => setFiltroActivo(tipo)}
+              key={subcategoria.id_subcategoria}
+              className={`filtro-btn ${filtroActivo === subcategoria.id_subcategoria.toString() ? 'activo' : ''}`}
+              onClick={() => setFiltroActivo(subcategoria.id_subcategoria.toString())}
             >
-              {tipo}
+              {subcategoria.nombre}
             </button>
           ))}
         </aside>
@@ -259,7 +273,10 @@ const Higiene = () => {
           {productosFiltrados.length > 0 ? (
             productosFiltrados.map((producto) => (
               <div key={producto.id_producto} className="card-producto fade-in-right">
-                <img src={`http://localhost:${BACKEND_PORT}${producto.imagenUrl}`} alt={producto.nombre} />
+                <img
+                  src={`http://localhost:${BACKEND_PORT}${producto.imagenUrl}`}
+                  alt={producto.nombre}
+                />
                 <div className="contenido">
                   <h4>{producto.nombre}</h4>
                   <p><strong>Marca:</strong> {obtenerNombreMarca(producto.idMarca !== undefined ? producto.idMarca : producto.id_marca)}</p>
