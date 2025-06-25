@@ -20,4 +20,4 @@ public interface ProductoRespositorio extends JpaRepository<Producto, Integer> {
     
     //  Buscar productos por categoría y subcategoría
     List<Producto> findByIdCategoriaAndIdSubcategoria(int idCategoria, int idSubcategoria);
-}
+} 

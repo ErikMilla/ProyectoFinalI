@@ -3,12 +3,16 @@ package com.ProyectoFinal.ProyectoFinalIntegrador.Controlador;
 import com.ProyectoFinal.ProyectoFinalIntegrador.Modelos.Venta;
 import com.ProyectoFinal.ProyectoFinalIntegrador.Modelos.DetalleVenta;
 import com.ProyectoFinal.ProyectoFinalIntegrador.Servicio.VentaServicio;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/carrito")
@@ -51,26 +55,33 @@ public class CarritoController {
 
     // Endpoint para obtener el carrito activo
     @GetMapping("/activo/{idUsuario}")
-    public Venta obtenerCarritoActivo(@PathVariable int idUsuario) {
+
+    public ResponseEntity<?> obtenerCarritoActivo(@PathVariable int idUsuario) {
         Venta carrito = ventaServicio.obtenerCarritoActivo(idUsuario);
         if (carrito == null) {
-            // Devolver 404 si no hay carrito activo
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active cart found for this user.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active cart found for this user.");
+
         }
-        return carrito;
+        return ResponseEntity.ok(carrito);
     }
 
-    // Endpoint para crear un nuevo carrito (usado cuando no hay uno activo)
+    // Endpoint para crear un nuevo carrito
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Opcional: para devolver 201 Created
-    public Venta crearCarrito(@RequestBody Venta venta) {
-        // La venta recibida solo debería tener el idUsuario
-        return ventaServicio.crearCarrito(venta.getIdUsuario());
+
+    public Venta crearCarrito(@RequestBody Map<String, Integer> body) {
+        int idUsuario = body.get("idUsuario");
+        return ventaServicio.crearCarrito(idUsuario);
+
     }
 
     // Endpoint para agregar un detalle a un carrito existente
     @PostMapping("/detalle")
     public DetalleVenta agregarDetalle(@RequestBody AgregarDetalleRequest request) {
+        Preconditions.checkNotNull(request, "La solicitud no puede ser nula");
+        Preconditions.checkArgument(request.getIdVenta() > 0, "El ID de venta debe ser positivo");
+        Preconditions.checkArgument(request.getId_producto() > 0, "El ID de producto debe ser positivo");
+        Preconditions.checkArgument(request.getCantidad() > 0, "La cantidad debe ser positiva");
+
         DetalleVenta nuevoDetalle = new DetalleVenta();
         nuevoDetalle.setId_producto(request.getId_producto());
         nuevoDetalle.setCantidad(request.getCantidad());
@@ -81,47 +92,58 @@ public class CarritoController {
     // Eliminar producto del carrito
     @DeleteMapping("/detalle/{idDetalle}")
     public void eliminarDetalle(@PathVariable int idDetalle) {
+        Preconditions.checkArgument(idDetalle > 0, "El ID de detalle debe ser positivo");
         ventaServicio.eliminarDetalle(idDetalle);
     }
 
     // Endpoint para aumentar la cantidad de un detalle
     @PutMapping("/detalle/{idDetalle}/aumentar")
     public DetalleVenta aumentarCantidadDetalle(@PathVariable int idDetalle, @RequestBody DetalleVenta detalleActualizado) {
-        // La nueva cantidad viene en el body del request
-        int nuevaCantidad = detalleActualizado.getCantidad();
-        // En este caso, el frontend ya envía la cantidad actualizada, no necesitamos el idVenta aquí
-        return ventaServicio.actualizarCantidadDetalle(idDetalle, nuevaCantidad);
+        Preconditions.checkArgument(idDetalle > 0, "El ID de detalle debe ser positivo");
+        Preconditions.checkNotNull(detalleActualizado, "El detalle actualizado no puede ser nulo");
+        Preconditions.checkArgument(detalleActualizado.getCantidad() > 0, "La cantidad debe ser positiva");
+
+        return ventaServicio.actualizarCantidadDetalle(idDetalle, detalleActualizado.getCantidad());
     }
 
     // Endpoint para disminuir la cantidad de un detalle
     @PutMapping("/detalle/{idDetalle}/disminuir")
     public ResponseEntity<?> disminuirCantidadDetalle(@PathVariable int idDetalle, @RequestBody DetalleVenta detalleActualizado) {
+        Preconditions.checkArgument(idDetalle > 0, "El ID de detalle debe ser positivo");
+        Preconditions.checkNotNull(detalleActualizado, "El detalle actualizado no puede ser nulo");
+
         int nuevaCantidad = detalleActualizado.getCantidad();
         if (nuevaCantidad <= 0) {
-            // Si la cantidad es 0 o menos, eliminar el detalle
             ventaServicio.eliminarDetalle(idDetalle);
-            return ResponseEntity.ok().build(); // Devolver respuesta exitosa sin contenido
+            return ResponseEntity.ok().build();
         } else {
-            // Si la cantidad es mayor que 0, actualizar la cantidad
             DetalleVenta detalleModificado = ventaServicio.actualizarCantidadDetalle(idDetalle, nuevaCantidad);
-            if (detalleModificado != null) {
-                 return ResponseEntity.ok(detalleModificado);
-            } else {
-                 return ResponseEntity.notFound().build(); // Manejar caso donde el detalle no se encuentra
-            }
+            return detalleModificado != null 
+                ? ResponseEntity.ok(detalleModificado)
+                : ResponseEntity.notFound().build();
         }
     }
 
     // Finalizar compra
     @PostMapping("/{idUsuario}/finalizar")
     public Venta finalizarCompra(@PathVariable int idUsuario, @RequestBody Venta venta) {
-        // Aquí puedes calcular el total y marcar la venta como finalizada
+        Preconditions.checkArgument(idUsuario > 0, "El ID de usuario debe ser positivo");
+        Preconditions.checkNotNull(venta, "La venta no puede ser nula");
         return ventaServicio.finalizarVenta(venta);
     }
 
     // Obtener detalles del carrito
     @GetMapping("/detalles/{idVenta}")
     public List<DetalleVenta> obtenerDetalles(@PathVariable int idVenta) {
-        return ventaServicio.obtenerDetallesPorVenta(idVenta);
+        Preconditions.checkArgument(idVenta > 0, "El ID de venta debe ser positivo");
+        List<DetalleVenta> detalles = ventaServicio.obtenerDetallesPorVenta(idVenta);
+        return ImmutableList.copyOf(detalles); // Retorna una lista inmutable
+    }
+
+    // Vaciar carrito (eliminar todos los productos del carrito)
+    @DeleteMapping("/{idVenta}/vaciar")
+    public ResponseEntity<?> vaciarCarrito(@PathVariable int idVenta) {
+        ventaServicio.vaciarCarrito(idVenta);
+        return ResponseEntity.ok().build();
     }
 } 

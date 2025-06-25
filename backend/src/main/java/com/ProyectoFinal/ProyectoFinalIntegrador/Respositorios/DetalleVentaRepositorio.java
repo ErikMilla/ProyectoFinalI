@@ -10,4 +10,5 @@ public interface DetalleVentaRepositorio extends JpaRepository<DetalleVenta, Int
     List<DetalleVenta> findByVenta_IdVenta(int idVenta);
     @Query("SELECT d FROM DetalleVenta d WHERE d.venta.idVenta = :idVenta AND d.id_producto = :idProducto")
     DetalleVenta findByVentaAndProducto(@Param("idVenta") int idVenta, @Param("idProducto") int idProducto);
+    void deleteByVenta_IdVenta(int idVenta);
 } 
