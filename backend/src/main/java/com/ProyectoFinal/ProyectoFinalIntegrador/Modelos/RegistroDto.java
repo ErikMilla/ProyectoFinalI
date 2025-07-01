@@ -1,4 +1,3 @@
-
 package com.ProyectoFinal.ProyectoFinalIntegrador.Modelos;
 
 import jakarta.persistence.Column;
@@ -11,11 +10,15 @@ private String apellidos;
 @NotEmpty
 @Email
 private String email;
+@NotEmpty
+@Pattern(regexp = "^9\\d{8}$", message = "El teléfono debe tener 9 dígitos, solo números y empezar con 9")
 private String telefono;
 @NotEmpty
 @Column(unique=true)
 private String direccion;
-@Size(min=6, message="La contraseña debe tener minimo 6 caracteres")
+@NotEmpty
+@Pattern(regexp = ".*[A-Z].*", message = "La contraseña debe contener al menos una mayúscula")
+@Size(min=8, message="La contraseña debe tener mínimo 8 caracteres")
 private String contraseña;
 private String confirmarcontraseña;
 

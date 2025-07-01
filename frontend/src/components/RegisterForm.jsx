@@ -15,6 +15,7 @@ const RegisterForm = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errores, setErrores] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,16 +25,37 @@ const RegisterForm = () => {
     }));
   };
 
+  const validarFormulario = () => {
+    const nuevosErrores = {};
+    // Validación de teléfono
+    if (!/^9\d{8}$/.test(formData.telefono)) {
+      nuevosErrores.telefono = 'El teléfono debe tener 9 dígitos, solo números y empezar con 9';
+    }
+    // Validación de email
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      nuevosErrores.email = 'El correo debe tener un formato válido';
+    }
+    // Validación de contraseña
+    if (!/^(?=.*[A-Z]).{8,}$/.test(formData.password)) {
+      nuevosErrores.password = 'La contraseña debe tener al menos 8 caracteres y una mayúscula';
+    }
+    // Confirmar contraseña
+    if (formData.password !== formData.confirmPassword) {
+      nuevosErrores.confirmPassword = 'Las contraseñas no coinciden';
+    }
+    return nuevosErrores;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
+    const nuevosErrores = validarFormulario();
+    setErrores(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) {
       setLoading(false);
       return;
     }
+    setLoading(true);
 
     try {
       const response = await fetch('http://localhost:8081/api/auth/registrar', {
@@ -113,6 +135,7 @@ const RegisterForm = () => {
             required
             disabled={loading}
           />
+          {errores.email && <span className="error-message">{errores.email}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="telefono">Teléfono</label>
@@ -125,6 +148,7 @@ const RegisterForm = () => {
             required
             disabled={loading}
           />
+          {errores.telefono && <span className="error-message">{errores.telefono}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="direccion">Dirección</label>
@@ -149,6 +173,7 @@ const RegisterForm = () => {
             required
             disabled={loading}
           />
+          {errores.password && <span className="error-message">{errores.password}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirmar Contraseña</label>
@@ -161,6 +186,7 @@ const RegisterForm = () => {
             required
             disabled={loading}
           />
+          {errores.confirmPassword && <span className="error-message">{errores.confirmPassword}</span>}
         </div>
         <button type="submit" className="register-button" disabled={loading}>
           {loading ? 'Registrando...' : 'Registrarse'}

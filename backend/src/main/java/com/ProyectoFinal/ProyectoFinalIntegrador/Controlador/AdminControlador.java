@@ -157,4 +157,52 @@ public class AdminControlador {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @DeleteMapping("/usuarios/{id}")
+    public ResponseEntity<?> eliminarUsuario(@PathVariable int id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            if (!repo.existsById(id)) {
+                response.put("success", false);
+                response.put("message", "Usuario no encontrado");
+                return ResponseEntity.badRequest().body(response);
+            }
+            repo.deleteById(id);
+            response.put("success", true);
+            response.put("message", "Usuario eliminado correctamente");
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            response.put("success", false);
+            response.put("message", "Error al eliminar usuario");
+            response.put("errorDetails", ex.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<?> editarUsuario(@PathVariable int id, @RequestBody Map<String, Object> datos) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            AppUser usuario = repo.findById(id).orElse(null);
+            if (usuario == null) {
+                response.put("success", false);
+                response.put("message", "Usuario no encontrado");
+                return ResponseEntity.badRequest().body(response);
+            }
+            if (datos.containsKey("nombre")) usuario.setNombre((String) datos.get("nombre"));
+            if (datos.containsKey("apellidos")) usuario.setApellidos((String) datos.get("apellidos"));
+            if (datos.containsKey("email")) usuario.setEmail((String) datos.get("email"));
+            if (datos.containsKey("telefono")) usuario.setTelefono((String) datos.get("telefono"));
+            if (datos.containsKey("direccion")) usuario.setDireccion((String) datos.get("direccion"));
+            repo.save(usuario);
+            response.put("success", true);
+            response.put("message", "Usuario editado correctamente");
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            response.put("success", false);
+            response.put("message", "Error al editar usuario");
+            response.put("errorDetails", ex.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }
