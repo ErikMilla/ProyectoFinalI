@@ -1,23 +1,23 @@
-2025-06-16 22:46:27.108 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
-2025-06-16 22:46:27.236 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - Starting ProyectoFinalIntegradorApplication using Java 24.0.1 with PID 11144 (D:\Ronald-2025\Nuevos Pro\PR\ProyectoFinalI\backend\target\classes started by Diego in D:\Ronald-2025\Nuevos Pro\PR\ProyectoFinalI\backend)
-2025-06-16 22:46:27.238 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - No active profile set, falling back to 1 default profile: "default"
-2025-06-16 22:46:28.813 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-06-16 22:46:28.990 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 132 ms. Found 8 JPA repository interfaces.
-2025-06-16 22:46:29.988 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
-2025-06-16 22:46:30.011 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
-2025-06-16 22:46:30.014 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-06-16 22:46:30.014 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
-2025-06-16 22:46:30.129 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-06-16 22:46:30.130 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2811 ms
-2025-06-16 22:46:30.479 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-06-16 22:46:30.589 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
-2025-06-16 22:46:30.650 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2025-06-16 22:46:31.140 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-06-16 22:46:31.187 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2025-06-16 22:46:31.538 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@152e7703
-2025-06-16 22:46:31.540 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2025-06-16 22:46:31.630 [main] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
-2025-06-16 22:46:31.670 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+2025-07-09 00:13:23.565 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-07-09 00:13:23.687 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - Starting ProyectoFinalIntegradorApplication using Java 21.0.1 with PID 17008 (C:\Users\gv250\OneDrive\Escritorio\Integrador\ProyectoFinalI\backend\target\classes started by gv250 in C:\Users\gv250\OneDrive\Escritorio\Integrador\ProyectoFinalI\backend)
+2025-07-09 00:13:23.687 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - No active profile set, falling back to 1 default profile: "default"
+2025-07-09 00:13:25.423 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-09 00:13:25.646 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 197 ms. Found 8 JPA repository interfaces.
+2025-07-09 00:13:27.097 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-07-09 00:13:27.129 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-07-09 00:13:27.137 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-09 00:13:27.137 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-07-09 00:13:27.273 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-09 00:13:27.275 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3499 ms
+2025-07-09 00:13:27.627 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-09 00:13:27.805 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-07-09 00:13:27.914 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-07-09 00:13:28.677 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-09 00:13:28.783 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-07-09 00:13:29.182 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6fd9dbe6
+2025-07-09 00:13:29.185 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-07-09 00:13:29.314 [main] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-07-09 00:13:29.364 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 5.5.5
@@ -25,40 +25,66 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-06-16 22:46:33.115 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-06-16 22:46:35.066 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-06-16 22:46:35.615 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name appUserServicio
-2025-06-16 22:46:35.844 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-06-16 22:46:38.890 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-06-16 22:46:39.712 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
-2025-06-16 22:46:39.764 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
-2025-06-16 22:46:39.778 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - Started ProyectoFinalIntegradorApplication in 13.497 seconds (process running for 14.09)
-2025-06-16 22:52:11.771 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-06-16 22:52:11.788 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-06-16 22:52:13.565 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1777 ms
-2025-06-16 22:53:18.762 [http-nio-8081-exec-5] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 2
-2025-06-16 22:53:18.863 [http-nio-8081-exec-6] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 2
-2025-06-16 22:53:32.545 [http-nio-8081-exec-8] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 2
-2025-06-16 22:53:32.572 [http-nio-8081-exec-9] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 2
-2025-06-16 22:55:49.063 [http-nio-8081-exec-5] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 22:55:49.336 [http-nio-8081-exec-1] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 22:56:44.243 [http-nio-8081-exec-3] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 22:56:44.267 [http-nio-8081-exec-10] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 22:59:09.855 [http-nio-8081-exec-9] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
-2025-06-16 23:05:56.941 [http-nio-8081-exec-3] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:05:56.959 [http-nio-8081-exec-5] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:09:04.262 [http-nio-8081-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
-2025-06-16 23:13:00.176 [http-nio-8081-exec-9] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
-2025-06-16 23:33:17.215 [http-nio-8081-exec-5] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:33:17.253 [http-nio-8081-exec-6] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:33:45.329 [http-nio-8081-exec-4] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:33:45.913 [http-nio-8081-exec-3] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:35:34.555 [http-nio-8081-exec-2] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:35:34.594 [http-nio-8081-exec-7] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:40:26.031 [http-nio-8081-exec-4] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:40:26.120 [http-nio-8081-exec-5] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:43:13.003 [http-nio-8081-exec-4] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:43:13.019 [http-nio-8081-exec-10] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:46:38.672 [http-nio-8081-exec-2] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:46:51.202 [http-nio-8081-exec-6] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
-2025-06-16 23:46:51.244 [http-nio-8081-exec-9] INFO  c.P.P.Controlador.VentaController - Venta obtenida exitosamente - ID: 5
+2025-07-09 00:13:31.820 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-09 00:13:32.021 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-09 00:13:32.783 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name appUserServicio
+2025-07-09 00:13:32.933 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-09 00:13:34.815 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-09 00:13:36.012 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-07-09 00:13:36.052 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-07-09 00:13:36.068 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - Started ProyectoFinalIntegradorApplication in 13.793 seconds (process running for 14.759)
+2025-07-09 00:17:52.333 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-07-09 00:17:52.524 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - Starting ProyectoFinalIntegradorApplication using Java 21.0.1 with PID 26584 (C:\Users\gv250\OneDrive\Escritorio\Integrador\ProyectoFinalI\backend\target\classes started by gv250 in C:\Users\gv250\OneDrive\Escritorio\Integrador\ProyectoFinalI\backend)
+2025-07-09 00:17:52.526 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - No active profile set, falling back to 1 default profile: "default"
+2025-07-09 00:17:54.311 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-09 00:17:54.508 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 172 ms. Found 8 JPA repository interfaces.
+2025-07-09 00:17:55.960 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-07-09 00:17:55.989 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-07-09 00:17:55.990 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-09 00:17:55.990 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-07-09 00:17:56.134 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-09 00:17:56.135 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3496 ms
+2025-07-09 00:17:56.539 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-09 00:17:56.655 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-07-09 00:17:56.732 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-07-09 00:17:57.334 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-09 00:17:57.426 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-07-09 00:17:57.785 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2b2b7e3c
+2025-07-09 00:17:57.789 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-07-09 00:17:57.881 [main] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-07-09 00:17:57.924 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 5.5.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-09 00:17:59.853 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-09 00:18:00.139 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-09 00:18:00.905 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name appUserServicio
+2025-07-09 00:18:01.037 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-09 00:18:03.220 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-09 00:18:04.527 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-07-09 00:18:04.575 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-07-09 00:18:04.606 [main] INFO  c.P.P.ProyectoFinalIntegradorApplication - Started ProyectoFinalIntegradorApplication in 13.472 seconds (process running for 14.301)
+2025-07-09 00:18:09.628 [scheduling-1] INFO  c.P.P.M.programado.CronTasks - ⏰ TAREAS PROGRAMADAS ACTIVAS:
+2025-07-09 00:18:09.629 [scheduling-1] INFO  c.P.P.M.programado.CronTasks - ⏰ • Mantenimiento diario: 10:10 PM
+2025-07-09 00:18:09.630 [scheduling-1] INFO  c.P.P.M.programado.CronTasks - ⏰ • Mantenimiento semanal: Domingo 10:10 PM
+2025-07-09 00:18:09.631 [scheduling-1] INFO  c.P.P.M.programado.CronTasks - ⏰ • Backup emergencia: 10:10 PM
+2025-07-09 00:18:09.631 [scheduling-1] INFO  c.P.P.M.programado.CronTasks - ⏰ • Monitoreo horario: 10:10 PM
+2025-07-09 00:25:31.210 [http-nio-8081-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-09 00:25:31.211 [http-nio-8081-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-07-09 00:25:31.216 [http-nio-8081-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 5 ms
+2025-07-09 00:26:50.526 [http-nio-8081-exec-1] INFO  c.P.P.M.backup.BackupController - Solicitud de backup recibida
+2025-07-09 00:26:51.146 [http-nio-8081-exec-1] INFO  c.P.P.M.backup.BackupService - Iniciando backup de la base de datos: bd_Integrador
+2025-07-09 00:26:51.490 [http-nio-8081-exec-1] INFO  c.P.P.M.backup.BackupService - ✅ Backup generado exitosamente: backup_bd_Integrador_20250709_002651.sql
+2025-07-09 00:26:51.490 [http-nio-8081-exec-1] INFO  c.P.P.M.backup.BackupService - 📁 Ubicación: C:/Users/gv250/OneDrive/Escritorio/Integrador/ProyectoFinalI/backend/backup/\backup_bd_Integrador_20250709_002651.sql
+2025-07-09 00:26:51.490 [http-nio-8081-exec-1] INFO  c.P.P.M.backup.BackupService - 📏 Tamaño: 28 KB
+2025-07-09 00:26:51.490 [http-nio-8081-exec-1] INFO  c.P.P.M.backup.BackupController - Backup generado exitosamente: C:/Users/gv250/OneDrive/Escritorio/Integrador/ProyectoFinalI/backend/backup/\backup_bd_Integrador_20250709_002651.sql
+2025-07-09 00:27:02.254 [http-nio-8081-exec-1] INFO  c.P.P.M.limpieza.LimpiezaController - Solicitud para limpiar logs antiguos
+2025-07-09 00:27:02.265 [http-nio-8081-exec-1] INFO  c.P.P.M.limpieza.LimpiezaController - Logs antiguos limpiados exitosamente
+2025-07-09 00:27:11.102 [http-nio-8081-exec-7] INFO  c.P.P.M.limpieza.LimpiezaController - Solicitud para limpiar backups antiguos
+2025-07-09 00:27:11.105 [http-nio-8081-exec-7] INFO  c.P.P.M.limpieza.LimpiezaController - Backups antiguos limpiados exitosamente
+2025-07-09 00:27:14.591 [http-nio-8081-exec-2] INFO  c.P.P.M.limpieza.LimpiezaController - Solicitud para limpiar logs antiguos
+2025-07-09 00:27:14.594 [http-nio-8081-exec-2] INFO  c.P.P.M.limpieza.LimpiezaController - Logs antiguos limpiados exitosamente
